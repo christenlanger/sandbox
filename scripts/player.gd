@@ -1,16 +1,18 @@
 extends CharacterBody2D
 
 # Player speed
-const SPEED = 80.0
+const SPEED = 90.0
 const DEFAULT_SPEED_MULTIPLIER = 1.0
-const DASH_SPEED = 3.0
+const DASH_SPEED = 2.5
 const JUMP_VELOCITY = -300.0
+const CAMERA_OFFSET = 0.6
 
 # References
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _state_chart: StateChart = $StateChart
 @onready var _ray_cast_right: RayCast2D = $RayCastRight
 @onready var _ray_cast_left: RayCast2D = $RayCastLeft
+@onready var _camera: Camera2D
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -18,14 +20,25 @@ var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 # Flags for player movement
 var _was_grounded := false
 var _speed_multiplier := 1.0
-var _last_direction := 0
-var _gravity_mod := 0.0
+var _last_direction := 1.0
+
+func _ready() -> void:
+	_camera = get_node("Camera2D")
 
 func _process(delta: float) -> void:
 	# Reset speed if collided with wall
 	if _ray_cast_right.is_colliding() or _ray_cast_left.is_colliding():
 		if _speed_multiplier > DEFAULT_SPEED_MULTIPLIER:
 			_reset_speed_multiplier()
+	
+	# Camera offset based on direction
+	if _camera:
+		var camera_speed := 1 * delta
+
+		if _last_direction > 0:
+			_camera.drag_horizontal_offset = min(CAMERA_OFFSET, _camera.drag_horizontal_offset + camera_speed)
+		elif _last_direction < 0:
+			_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
 
 func _physics_process(delta: float) -> void:
 	pass # placeholder
@@ -59,7 +72,7 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 			_was_grounded = true
 			_state_chart.send_event("grounded")
 	else:
-		velocity.y += _gravity * delta - _gravity_mod
+		velocity.y += _gravity * delta
 		
 		# If we just left the floor, notify the state chart
 		if _was_grounded:
@@ -71,7 +84,6 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 # Enable double jump. Connect to this function for all enabled states
 func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
-		_gravity_mod = 0
 		velocity.y = JUMP_VELOCITY
 		_state_chart.send_event("jump")
 
@@ -92,6 +104,10 @@ func _on_dashing_state_physics_processing(delta: float) -> void:
 
 # Reset speed after grounded dash
 func _on_dash_end() -> void:
+	_reset_speed_multiplier()
+
+# Reset speed on double jump
+func _on_doublejump_jump() -> void:
 	_reset_speed_multiplier()
 
 # Reset speed after bunny hop window expires
