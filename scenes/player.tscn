@@ -1,0 +1,239 @@
+[gd_scene load_steps=15 format=3 uid="uid://bmvn5xjxutjdm"]
+
+[ext_resource type="Texture2D" uid="uid://b7vljjstqay7s" path="res://assets/char/knight.png" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://bs5sxurk5teb" path="res://scripts/player.gd" id="1_g2els"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="3_dqkch"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="4_qlg0r"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_smehm"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="6_ur7pv"]
+[ext_resource type="Script" uid="uid://c1vp0ojjvaby1" path="res://addons/godot_state_charts/parallel_state.gd" id="7_y4r1p"]
+[ext_resource type="Script" uid="uid://le5w1cm0ul8p" path="res://addons/godot_state_charts/expression_guard.gd" id="8_d2wvv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smehm"]
+size = Vector2(8.6098, 8.37246)
+
+[sub_resource type="Animation" id="Animation_3vyb7"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_g2els"]
+resource_name = "idle"
+length = 0.30001
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.30001),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qhqgy"]
+_data = {
+&"RESET": SubResource("Animation_3vyb7"),
+&"idle": SubResource("Animation_g2els")
+}
+
+[sub_resource type="Resource" id="Resource_3v2ag"]
+script = ExtResource("8_d2wvv")
+expression = "velocity_y > 0"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[sub_resource type="Resource" id="Resource_jej6c"]
+script = ExtResource("8_d2wvv")
+expression = "velocity_y < 0"
+metadata/_custom_type_script = "uid://le5w1cm0ul8p"
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_g2els")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -5)
+texture = ExtResource("1_3vyb7")
+hframes = 8
+vframes = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2.98023e-08, 4.76837e-07)
+scale = Vector2(1.04532, 1.67215)
+shape = SubResource("RectangleShape2D_smehm")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_qhqgy")
+}
+autoplay = "idle"
+
+[node name="RayCastRight" type="RayCast2D" parent="."]
+position = Vector2(0, -2)
+target_position = Vector2(6, 0)
+
+[node name="RayCastLeft" type="RayCast2D" parent="."]
+position = Vector2(0, -2)
+target_position = Vector2(-5, 0)
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("3_dqkch")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("4_qlg0r")
+initial_state = NodePath("CannotMove")
+
+[node name="CanMove" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_qlg0r")
+initial_state = NodePath("Grounded")
+
+[node name="On CannotMove" type="Node" parent="StateChart/Root/CanMove"]
+script = ExtResource("5_smehm")
+to = NodePath("../../CannotMove")
+event = &"disable_move"
+delay_in_seconds = "0.0"
+
+[node name="Grounded" type="Node" parent="StateChart/Root/CanMove"]
+script = ExtResource("4_qlg0r")
+initial_state = NodePath("Normal")
+
+[node name="Normal" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/Grounded/Normal"]
+script = ExtResource("5_smehm")
+to = NodePath("../../../Airborne/JumpState/CoyoteTime")
+event = &"airborne"
+delay_in_seconds = "0.0"
+
+[node name="On Dash" type="Node" parent="StateChart/Root/CanMove/Grounded/Normal"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Dashing")
+event = &"dash"
+delay_in_seconds = "0.0"
+
+[node name="Dashing" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/Grounded/Dashing"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Normal")
+delay_in_seconds = "0.2"
+
+[node name="On Jump" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Airborne/JumpState/DblJumpEnabled")
+event = &"jump"
+delay_in_seconds = "0.0"
+
+[node name="CanBunnyHop" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Normal")
+delay_in_seconds = "0.05"
+
+[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
+script = ExtResource("5_smehm")
+to = NodePath("../../../Airborne/JumpState/CoyoteTime")
+event = &"airborne"
+delay_in_seconds = "0.0"
+
+[node name="On Dash" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Dashing")
+event = &"dash"
+delay_in_seconds = "0.0"
+
+[node name="Airborne" type="Node" parent="StateChart/Root/CanMove"]
+script = ExtResource("7_y4r1p")
+
+[node name="JumpState" type="Node" parent="StateChart/Root/CanMove/Airborne"]
+script = ExtResource("4_qlg0r")
+initial_state = NodePath("CoyoteTime")
+
+[node name="CannotJump" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+script = ExtResource("6_ur7pv")
+
+[node name="DblJumpEnabled" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Jump" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState/DblJumpEnabled"]
+script = ExtResource("5_smehm")
+to = NodePath("../../CannotJump")
+event = &"jump"
+delay_in_seconds = "0.0"
+
+[node name="CoyoteTime" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+script = ExtResource("6_ur7pv")
+
+[node name="On DblJumpEnabled" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState/CoyoteTime"]
+script = ExtResource("5_smehm")
+to = NodePath("../../DblJumpEnabled")
+delay_in_seconds = "0.1"
+
+[node name="On Grounded" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+script = ExtResource("5_smehm")
+to = NodePath("../../../Grounded/CanBunnyHop")
+event = &"grounded"
+delay_in_seconds = "0.0"
+
+[node name="JumpDirection" type="Node" parent="StateChart/Root/CanMove/Airborne"]
+script = ExtResource("4_qlg0r")
+initial_state = NodePath("Rising")
+
+[node name="Rising" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Falling" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/Rising"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Falling")
+guard = SubResource("Resource_3v2ag")
+delay_in_seconds = "0.0"
+
+[node name="Falling" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Rising" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/Falling"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Rising")
+guard = SubResource("Resource_jej6c")
+delay_in_seconds = "0.0"
+
+[node name="CannotMove" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_ur7pv")
+
+[node name="On CanMove" type="Node" parent="StateChart/Root/CannotMove"]
+script = ExtResource("5_smehm")
+to = NodePath("../../CanMove")
+event = &"enable_move"
+delay_in_seconds = "0.0"
+
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_dash_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_dashing_state_physics_processing"]
+[connection signal="taken" from="StateChart/Root/CanMove/Grounded/Dashing/On Normal" to="." method="_on_dash_end"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/CanBunnyHop" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/CanBunnyHop" to="." method="_on_dash_enabled_state_physics_processing"]
+[connection signal="taken" from="StateChart/Root/CanMove/Grounded/CanBunnyHop/On Normal" to="." method="_on_bunnyhop_expire"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpState/DblJumpEnabled" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpState/CoyoteTime" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpDirection/Rising" to="." method="_on_rising_state_physics_processing"]
