@@ -5,7 +5,7 @@ const SPEED = 90.0
 const DEFAULT_SPEED_MULTIPLIER = 1.0
 const DASH_SPEED = 2.5
 const JUMP_VELOCITY = -300.0
-const CAMERA_OFFSET = 0.6
+const CAMERA_OFFSET = 0.75
 
 # References
 @onready var _sprite: Sprite2D = $Sprite
@@ -22,11 +22,15 @@ var _was_grounded := false
 var _speed_multiplier := 1.0
 var _last_direction := 1.0
 
+
 func _ready() -> void:
 	_camera = get_node("Camera2D")
+	if _camera:
+		_camera.make_current()
+
 
 func _process(delta: float) -> void:
-	# Reset speed if collided with wall
+	# Reset speed if body is colliding with anything
 	if _ray_cast_right.is_colliding() or _ray_cast_left.is_colliding():
 		if _speed_multiplier > DEFAULT_SPEED_MULTIPLIER:
 			_reset_speed_multiplier()
@@ -36,12 +40,16 @@ func _process(delta: float) -> void:
 		var camera_speed := 1 * delta
 
 		if _last_direction > 0:
+			#_camera.drag_horizontal_offset = CAMERA_OFFSET
 			_camera.drag_horizontal_offset = min(CAMERA_OFFSET, _camera.drag_horizontal_offset + camera_speed)
 		elif _last_direction < 0:
+			#_camera.drag_horizontal_offset = CAMERA_OFFSET * -1
 			_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
+
 
 func _physics_process(delta: float) -> void:
 	pass # placeholder
+
 
 func _on_can_move_state_physics_processing(delta: float) -> void:
 	# Get the input direction and handle the movement/deceleration.
@@ -81,17 +89,20 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	
 	_state_chart.set_expression_property("velocity_y", velocity.y)
 
+
 # Enable double jump. Connect to this function for all enabled states
 func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
 		_state_chart.send_event("jump")
 
+
 # Enable dash. Typically only on grounded non-dashing state
 func _on_dash_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("dash") and _last_direction != 0:
 		_speed_multiplier = DASH_SPEED
 		_state_chart.send_event("dash")
+
 
 # Additional processing when dashing
 func _on_dashing_state_physics_processing(delta: float) -> void:
@@ -102,21 +113,26 @@ func _on_dashing_state_physics_processing(delta: float) -> void:
 	
 	move_and_slide()
 
+
 # Reset speed after grounded dash
 func _on_dash_end() -> void:
 	_reset_speed_multiplier()
+
 
 # Reset speed on double jump
 func _on_doublejump_jump() -> void:
 	_reset_speed_multiplier()
 
+
 # Reset speed after bunny hop window expires
 func _on_bunnyhop_expire() -> void:
 	_reset_speed_multiplier()
 
+
 # Reset speed multiplier
 func _reset_speed_multiplier() -> void:
 	_speed_multiplier = DEFAULT_SPEED_MULTIPLIER
+
 
 # Process jump hold frames
 func _on_rising_state_physics_processing(delta: float) -> void:
