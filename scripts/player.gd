@@ -9,6 +9,8 @@ const CAMERA_OFFSET = 0.75
 
 # References
 @onready var _sprite: Sprite2D = $Sprite
+@onready var _animation_tree: AnimationTree = $AnimationTree
+@onready var _animation_state_machine: AnimationNodeStateMachinePlayback = _animation_tree["parameters/playback"]
 @onready var _state_chart: StateChart = $StateChart
 @onready var _ray_cast_right: RayCast2D = $RayCastRight
 @onready var _ray_cast_left: RayCast2D = $RayCastLeft
@@ -46,6 +48,7 @@ func _process(delta: float) -> void:
 			#_camera.drag_horizontal_offset = CAMERA_OFFSET * -1
 			_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
 
+	print(_animation_state_machine.get_current_node())
 
 func _physics_process(delta: float) -> void:
 	pass # placeholder
@@ -79,6 +82,11 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 		if not _was_grounded:
 			_was_grounded = true
 			_state_chart.send_event("grounded")
+			
+		if velocity.x == 0.0:
+			_animation_state_machine.travel("idle")
+		else:
+			_animation_state_machine.travel("run")
 	else:
 		velocity.y += _gravity * delta
 		
@@ -95,6 +103,9 @@ func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
 		_state_chart.send_event("jump")
+		
+		if _was_grounded:
+			_animation_state_machine.travel("jump")
 
 
 # Enable dash. Typically only on grounded non-dashing state
@@ -122,6 +133,7 @@ func _on_dash_end() -> void:
 # Reset speed on double jump
 func _on_doublejump_jump() -> void:
 	_reset_speed_multiplier()
+	_animation_state_machine.travel("doublejump")
 
 
 # Reset speed after bunny hop window expires
@@ -140,3 +152,7 @@ func _on_rising_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_released("jump"):
 		if velocity.y < 0:
 			velocity.y *= 0.5
+
+
+func _on_falling_state_entered() -> void:
+	_animation_state_machine.travel("fall")
