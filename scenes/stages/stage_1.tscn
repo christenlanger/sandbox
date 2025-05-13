@@ -105,11 +105,12 @@ shadow_offset = Vector2(3, 3)
 [node name="Stage1" type="Node2D" groups=["stages"]]
 script = ExtResource("1_1tge3")
 
-[node name="Player" parent="." instance=ExtResource("2_relhn")]
+[node name="Player" parent="." node_paths=PackedStringArray("_camera") instance=ExtResource("2_relhn")]
 unique_name_in_owner = true
 z_index = 5
 position = Vector2(0, -7)
 collision_layer = 2
+_camera = NodePath("Camera2D")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(4, 4)
@@ -118,7 +119,6 @@ limit_left = -140
 limit_top = -192
 limit_right = 765
 limit_bottom = 46
-position_smoothing_enabled = true
 drag_vertical_enabled = true
 drag_top_margin = 0.4
 drag_bottom_margin = 0.0
@@ -299,6 +299,7 @@ offset_left = 796.0
 offset_top = 9.0
 offset_right = -10.0
 offset_bottom = -398.0
+enabled = false
 initial_node_to_watch = NodePath("../../Player")
 
 [connection signal="body_entered" from="TriggerZones/ClearZone" to="." method="_on_clear_zone_body_entered"]

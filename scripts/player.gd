@@ -5,14 +5,17 @@ const SPEED = 90.0
 const DEFAULT_SPEED_MULTIPLIER = 1.0
 const DASH_SPEED = 2.5
 const JUMP_VELOCITY = -300.0
-const CAMERA_OFFSET = 0.75
+const CAMERA_SPEED = 1.5
+const CAMERA_OFFSET = 0.5
 
 # References
 @onready var _sprite: Sprite2D = $Sprite
+@onready var _animation_player: AnimationPlayer = $AnimationPlayer
 @onready var _state_chart: StateChart = $StateChart
 @onready var _ray_cast_right: RayCast2D = $RayCastRight
 @onready var _ray_cast_left: RayCast2D = $RayCastLeft
-@onready var _camera: Camera2D
+
+@export var _camera: Camera2D
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -24,7 +27,6 @@ var _last_direction := 1.0
 
 
 func _ready() -> void:
-	_camera = get_node("Camera2D")
 	if _camera:
 		_camera.make_current()
 
@@ -37,13 +39,11 @@ func _process(delta: float) -> void:
 	
 	# Camera offset based on direction
 	if _camera:
-		var camera_speed := 1 * delta
+		var camera_speed := CAMERA_SPEED * delta
 
 		if _last_direction > 0:
-			#_camera.drag_horizontal_offset = CAMERA_OFFSET
 			_camera.drag_horizontal_offset = min(CAMERA_OFFSET, _camera.drag_horizontal_offset + camera_speed)
 		elif _last_direction < 0:
-			#_camera.drag_horizontal_offset = CAMERA_OFFSET * -1
 			_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
 
 
@@ -74,6 +74,12 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	
 	# Check if we are on the floor
 	if is_on_floor():
+		# If we're moving, switch to running animation.
+		if velocity.x != 0:
+			_animation_player.play("running")
+		else:
+			_animation_player.play("idle")
+			
 		velocity.y = 0
 		# If we just touched the floor, notify state chart
 		if not _was_grounded:
@@ -122,6 +128,7 @@ func _on_dash_end() -> void:
 # Reset speed on double jump
 func _on_doublejump_jump() -> void:
 	_reset_speed_multiplier()
+	_animation_player.play("doublejump")
 
 
 # Reset speed after bunny hop window expires
@@ -140,3 +147,17 @@ func _on_rising_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_released("jump"):
 		if velocity.y < 0:
 			velocity.y *= 0.5
+
+
+# Play dashing animation
+func _on_dash() -> void:
+	_animation_player.play("dash")
+
+
+# Play falling animation
+func _on_falling_state_entered() -> void:
+	_animation_player.play("falling")
+
+# Play jump animation
+func _on_jump() -> void:
+	_animation_player.play("jump")
