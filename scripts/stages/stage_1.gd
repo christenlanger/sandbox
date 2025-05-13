@@ -57,3 +57,7 @@ func _on_pause_menu_pause() -> void:
 func _on_pause_menu_resume() -> void:
 	%PauseMenu.visible = false
 	get_tree().paused = false
+
+
+func _on_player_debug_text(text: String) -> void:
+	$UI/DebugText.text = text

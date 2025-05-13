@@ -1,6 +1,6 @@
-[gd_scene load_steps=37 format=3 uid="uid://bmvn5xjxutjdm"]
+[gd_scene load_steps=50 format=3 uid="uid://bmvn5xjxutjdm"]
 
-[ext_resource type="Texture2D" uid="uid://b75v323a47f5p" path="res://assets/char/knight.png" id="1_3vyb7"]
+[ext_resource type="Texture2D" uid="uid://b7vljjstqay7s" path="res://assets/char/knight.png" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://bs5sxurk5teb" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="3_dqkch"]
 [ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="4_qlg0r"]
@@ -25,6 +25,23 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_3v2ag"]
+resource_name = "dash"
+length = 0.0333367
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [58]
 }
 
 [sub_resource type="Animation" id="Animation_y4r1p"]
@@ -63,9 +80,9 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_g2els"]
 resource_name = "idle"
-length = 0.4
+length = 0.80002
 loop_mode = 1
-step = 1.0
+step = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -73,7 +90,7 @@ tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3]
@@ -96,6 +113,23 @@ tracks/0/keys = {
 "values": [42]
 }
 
+[sub_resource type="Animation" id="Animation_jej6c"]
+resource_name = "land"
+length = 0.70001
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [57, 58, 42, 58, 57]
+}
+
 [sub_resource type="Animation" id="Animation_smehm"]
 resource_name = "run"
 length = 0.4
@@ -114,15 +148,41 @@ tracks/0/keys = {
 "values": [16, 17, 18, 19]
 }
 
+[sub_resource type="Animation" id="Animation_f1ej7"]
+resource_name = "crouch"
+length = 0.10001
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [42]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qhqgy"]
 _data = {
 &"RESET": SubResource("Animation_3vyb7"),
+&"crouch": SubResource("Animation_f1ej7"),
+&"dash": SubResource("Animation_3v2ag"),
 &"doublejump": SubResource("Animation_y4r1p"),
 &"fall": SubResource("Animation_d2wvv"),
 &"idle": SubResource("Animation_g2els"),
 &"jump": SubResource("Animation_ur7pv"),
+&"land": SubResource("Animation_jej6c"),
 &"run": SubResource("Animation_smehm")
 }
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ur7pv"]
+animation = &"crouch"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qfm1y"]
+animation = &"dash"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3v2ag"]
 animation = &"doublejump"
@@ -135,6 +195,9 @@ animation = &"idle"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oprun"]
 animation = &"jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_smehm"]
+animation = &"land"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_a8ls1"]
 animation = &"run"
@@ -160,24 +223,47 @@ advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_31cv2"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pf23h"]
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ujl30"]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dt7fs"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wqfne"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wnwbv"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gl8cc"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ur7pv"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y4r1p"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_d2wvv"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3v2ag"]
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_dt7fs"]
-states/Start/position = Vector2(96, 100)
+states/End/position = Vector2(1318, 66.6667)
+states/Start/position = Vector2(97.1852, -7.33334)
+states/crouch/node = SubResource("AnimationNodeAnimation_ur7pv")
+states/crouch/position = Vector2(257.234, -171.407)
+states/dash/node = SubResource("AnimationNodeAnimation_qfm1y")
+states/dash/position = Vector2(412.741, -115.407)
 states/doublejump/node = SubResource("AnimationNodeAnimation_3v2ag")
 states/doublejump/position = Vector2(412, 282)
 states/fall/node = SubResource("AnimationNodeAnimation_jej6c")
 states/fall/position = Vector2(571, 200)
 states/idle/node = SubResource("AnimationNodeAnimation_f1ej7")
-states/idle/position = Vector2(256, 100)
+states/idle/position = Vector2(257.185, -7.33334)
 states/jump/node = SubResource("AnimationNodeAnimation_oprun")
 states/jump/position = Vector2(256, 200)
+states/land/node = SubResource("AnimationNodeAnimation_smehm")
+states/land/position = Vector2(96.0124, 100.593)
 states/run/node = SubResource("AnimationNodeAnimation_a8ls1")
-states/run/position = Vector2(571, 100)
-transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_qfm1y"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_fulsm"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_4r5pv"), "idle", "jump", SubResource("AnimationNodeStateMachineTransition_60mlk"), "run", "jump", SubResource("AnimationNodeStateMachineTransition_i4ail"), "jump", "doublejump", SubResource("AnimationNodeStateMachineTransition_a38lo"), "doublejump", "fall", SubResource("AnimationNodeStateMachineTransition_4ni07"), "jump", "fall", SubResource("AnimationNodeStateMachineTransition_l71n6"), "run", "fall", SubResource("AnimationNodeStateMachineTransition_ke2ow"), "fall", "run", SubResource("AnimationNodeStateMachineTransition_31cv2"), "fall", "idle", SubResource("AnimationNodeStateMachineTransition_pf23h"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_ujl30")]
-graph_offset = Vector2(0, 53.9259)
+states/run/position = Vector2(572.185, -7.33334)
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_qfm1y"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_fulsm"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_4r5pv"), "idle", "jump", SubResource("AnimationNodeStateMachineTransition_60mlk"), "run", "jump", SubResource("AnimationNodeStateMachineTransition_i4ail"), "jump", "doublejump", SubResource("AnimationNodeStateMachineTransition_a38lo"), "doublejump", "fall", SubResource("AnimationNodeStateMachineTransition_4ni07"), "jump", "fall", SubResource("AnimationNodeStateMachineTransition_l71n6"), "run", "fall", SubResource("AnimationNodeStateMachineTransition_ke2ow"), "fall", "run", SubResource("AnimationNodeStateMachineTransition_31cv2"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_ujl30"), "idle", "dash", SubResource("AnimationNodeStateMachineTransition_dt7fs"), "dash", "run", SubResource("AnimationNodeStateMachineTransition_wqfne"), "run", "dash", SubResource("AnimationNodeStateMachineTransition_wnwbv"), "dash", "idle", SubResource("AnimationNodeStateMachineTransition_gl8cc"), "fall", "land", SubResource("AnimationNodeStateMachineTransition_ur7pv"), "land", "idle", SubResource("AnimationNodeStateMachineTransition_y4r1p"), "idle", "crouch", SubResource("AnimationNodeStateMachineTransition_d2wvv"), "crouch", "idle", SubResource("AnimationNodeStateMachineTransition_3v2ag")]
+graph_offset = Vector2(-152, -103.074)
 
 [sub_resource type="Resource" id="Resource_3v2ag"]
 script = ExtResource("8_d2wvv")
@@ -257,6 +343,12 @@ to = NodePath("../../Dashing")
 event = &"dash"
 delay_in_seconds = "0.0"
 
+[node name="On Crouch" type="Node" parent="StateChart/Root/CanMove/Grounded/Normal"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Crouching")
+event = &"crouch"
+delay_in_seconds = "0.0"
+
 [node name="Dashing" type="Node" parent="StateChart/Root/CanMove/Grounded"]
 script = ExtResource("6_ur7pv")
 
@@ -277,7 +369,7 @@ script = ExtResource("6_ur7pv")
 [node name="On Normal" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Normal")
-delay_in_seconds = "0.05"
+delay_in_seconds = "0.06"
 
 [node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
 script = ExtResource("5_smehm")
@@ -289,6 +381,21 @@ delay_in_seconds = "0.0"
 script = ExtResource("5_smehm")
 to = NodePath("../../Dashing")
 event = &"dash"
+delay_in_seconds = "0.0"
+
+[node name="Crouching" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/Grounded/Crouching"]
+script = ExtResource("5_smehm")
+to = NodePath("../../../Airborne/JumpState/CoyoteTime")
+event = &"airborne"
+delay_in_seconds = "0.0"
+
+[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/Grounded/Crouching"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Normal")
+event = &"stand"
 delay_in_seconds = "0.0"
 
 [node name="Airborne" type="Node" parent="StateChart/Root/CanMove"]
@@ -360,6 +467,20 @@ to = NodePath("../../Rising")
 guard = SubResource("Resource_jej6c")
 delay_in_seconds = "0.0"
 
+[node name="On LongFall" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/Falling"]
+script = ExtResource("5_smehm")
+to = NodePath("../../LongFall")
+delay_in_seconds = "0.5"
+
+[node name="LongFall" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection"]
+script = ExtResource("6_ur7pv")
+
+[node name="On Rising" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/LongFall"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Rising")
+guard = SubResource("Resource_jej6c")
+delay_in_seconds = "0.0"
+
 [node name="CannotMove" type="Node" parent="StateChart/Root"]
 script = ExtResource("6_ur7pv")
 
@@ -370,16 +491,21 @@ event = &"enable_move"
 delay_in_seconds = "0.0"
 
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded" to="." method="_on_jump_enabled_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_dash_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_dash_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_crouch_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_dashing_state_physics_processing"]
 [connection signal="taken" from="StateChart/Root/CanMove/Grounded/Dashing/On Normal" to="." method="_on_dash_end"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/CanBunnyHop" to="." method="_on_dash_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/CanBunnyHop" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/CanBunnyHop" to="." method="_on_dash_enabled_state_physics_processing"]
 [connection signal="taken" from="StateChart/Root/CanMove/Grounded/CanBunnyHop/On Normal" to="." method="_on_bunnyhop_expire"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Crouching" to="." method="_on_crouch_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne" to="." method="_on_can_move_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpState/DblJumpEnabled" to="." method="_on_jump_enabled_state_physics_processing"]
 [connection signal="taken" from="StateChart/Root/CanMove/Airborne/JumpState/DblJumpEnabled/On Jump" to="." method="_on_doublejump_jump"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpState/CoyoteTime" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/CanMove/Airborne/JumpDirection/Rising" to="." method="_on_rising_state_entered"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpDirection/Rising" to="." method="_on_rising_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/Root/CanMove/Airborne/JumpDirection/Falling" to="." method="_on_falling_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/CanMove/Airborne/JumpDirection/LongFall" to="." method="_on_long_fall_state_entered"]

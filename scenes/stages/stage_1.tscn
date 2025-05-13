@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://bpvbogkvtxrbp"]
+[gd_scene load_steps=20 format=4 uid="uid://bpvbogkvtxrbp"]
 
 [ext_resource type="Script" uid="uid://dkoxpbo7wwihb" path="res://scripts/stages/stage_1.gd" id="1_1tge3"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_relhn"]
@@ -8,6 +8,10 @@
 [ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="5_f2dxg"]
 [ext_resource type="PackedScene" uid="uid://bdsiur7r08rsn" path="res://scenes/killzone.tscn" id="6_qm7fq"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="7_emlwg"]
+
+[sub_resource type="Curve" id="Curve_relhn"]
+_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="Animation" id="Animation_pipme"]
 length = 0.001
@@ -111,6 +115,7 @@ z_index = 5
 position = Vector2(0, -7)
 collision_layer = 2
 _camera = NodePath("Camera2D")
+_camera_curve = SubResource("Curve_relhn")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(4, 4)
@@ -119,6 +124,8 @@ limit_left = -140
 limit_top = -192
 limit_right = 765
 limit_bottom = 46
+position_smoothing_enabled = true
+position_smoothing_speed = 1.5
 drag_vertical_enabled = true
 drag_top_margin = 0.4
 drag_bottom_margin = 0.0
@@ -299,9 +306,17 @@ offset_left = 796.0
 offset_top = 9.0
 offset_right = -10.0
 offset_bottom = -398.0
-enabled = false
 initial_node_to_watch = NodePath("../../Player")
 
+[node name="DebugText" type="Label" parent="UI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+
+[connection signal="debug_text" from="Player" to="." method="_on_player_debug_text"]
 [connection signal="body_entered" from="TriggerZones/ClearZone" to="." method="_on_clear_zone_body_entered"]
 [connection signal="body_entered" from="TriggerZones/ToNextStage" to="." method="_on_to_next_stage_body_entered"]
 [connection signal="body_exited" from="TriggerZones/ToNextStage" to="." method="_on_to_next_stage_body_exited"]

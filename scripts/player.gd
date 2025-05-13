@@ -17,6 +17,9 @@ const CAMERA_OFFSET = 0.5
 @onready var _ray_cast_left: RayCast2D = $RayCastLeft
 
 @export var _camera: Camera2D
+@export var _camera_curve: Curve
+
+signal debug_text
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -25,6 +28,7 @@ var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var _was_grounded := false
 var _speed_multiplier := 1.0
 var _last_direction := 1.0
+var _long_fall := false
 
 
 func _ready() -> void:
@@ -43,11 +47,12 @@ func _process(delta: float) -> void:
 		var camera_speed := CAMERA_SPEED * delta
 
 		if _last_direction > 0:
-			_camera.drag_horizontal_offset = min(CAMERA_OFFSET, _camera.drag_horizontal_offset + camera_speed)
+			#_camera.drag_horizontal_offset = min(CAMERA_OFFSET, _camera.drag_horizontal_offset + camera_speed)
+			_camera.drag_horizontal_offset = CAMERA_OFFSET
 		elif _last_direction < 0:
-			_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
+			#_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
+			_camera.drag_horizontal_offset = CAMERA_OFFSET * -1
 
-	print(_animation_state_machine.get_current_node())
 
 func _physics_process(delta: float) -> void:
 	pass # placeholder
@@ -76,22 +81,19 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	
 	# Check if we are on the floor
 	if is_on_floor():
-		# If we're moving, switch to running animation.
-		if velocity.x != 0:
-			_animation_player.play("running")
+		if velocity.x == 0.0:
+			_animation_state_machine.travel("idle")
 		else:
-			_animation_player.play("idle")
-			
+			_animation_state_machine.travel("run")
+		
 		velocity.y = 0
 		# If we just touched the floor, notify state chart
 		if not _was_grounded:
 			_was_grounded = true
 			_state_chart.send_event("grounded")
-			
-		if velocity.x == 0.0:
-			_animation_state_machine.travel("idle")
-		else:
-			_animation_state_machine.travel("run")
+			if velocity.x == 0.0 and _long_fall:
+				_animation_state_machine.travel("land")
+		
 	else:
 		velocity.y += _gravity * delta
 		
@@ -103,6 +105,17 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	_state_chart.set_expression_property("velocity_y", velocity.y)
 
 
+# Enable crouch while grounded
+func _on_crouch_enabled_state_physics_processing(delta: float) -> void:
+	if Input.is_action_pressed("ui_down"):
+		_state_chart.send_event("crouch")
+		_animation_state_machine.travel("crouch")
+		_camera.drag_vertical_offset = 0.5
+	elif Input.is_action_just_released("ui_down"):
+		_state_chart.send_event("stand")
+		_animation_state_machine.travel("idle")
+		_camera.drag_vertical_offset = 0.0
+
 # Enable double jump. Connect to this function for all enabled states
 func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
@@ -110,6 +123,7 @@ func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 		_state_chart.send_event("jump")
 		
 		if _was_grounded:
+			_speed_multiplier *= 1.05
 			_animation_state_machine.travel("jump")
 
 
@@ -118,6 +132,7 @@ func _on_dash_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("dash") and _last_direction != 0:
 		_speed_multiplier = DASH_SPEED
 		_state_chart.send_event("dash")
+		_animation_state_machine.travel("dash")
 
 
 # Additional processing when dashing
@@ -161,3 +176,11 @@ func _on_rising_state_physics_processing(delta: float) -> void:
 
 func _on_falling_state_entered() -> void:
 	_animation_state_machine.travel("fall")
+
+
+func _on_long_fall_state_entered() -> void:
+	_long_fall = true
+
+
+func _on_rising_state_entered() -> void:
+	_long_fall = false
