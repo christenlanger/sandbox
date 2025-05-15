@@ -21,6 +21,7 @@ func _stage_loaded() -> void:
 	
 	_state_chart.send_event("enable_move")
 
+
 # Call stage clear event
 func _on_clear_zone_body_entered(body: Node2D) -> void:
 	for clearzone in get_tree().get_nodes_in_group("clearzones"):

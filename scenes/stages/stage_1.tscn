@@ -3,10 +3,11 @@
 [ext_resource type="Script" uid="uid://dkoxpbo7wwihb" path="res://scripts/stages/stage_1.gd" id="1_1tge3"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_relhn"]
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="3_bjuw2"]
-[ext_resource type="PackedScene" uid="uid://bf3k14kdi4j7c" path="res://scenes/pause_menu.tscn" id="3_relhn"]
+[ext_resource type="PackedScene" uid="uid://bf3k14kdi4j7c" path="res://scenes/ui/pause_menu.tscn" id="3_relhn"]
 [ext_resource type="TileSet" uid="uid://c4yprh07ttb2q" path="res://scenes/stages/stage_1.tres" id="4_mm8bn"]
 [ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="5_f2dxg"]
 [ext_resource type="PackedScene" uid="uid://bdsiur7r08rsn" path="res://scenes/killzone.tscn" id="6_qm7fq"]
+[ext_resource type="Script" uid="uid://sda8fuloe460" path="res://scripts/stages/ui.gd" id="7_bjuw2"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="7_emlwg"]
 
 [sub_resource type="Curve" id="Curve_relhn"]
@@ -97,15 +98,6 @@ _data = {
 &"color_cycle": SubResource("Animation_rxqpy")
 }
 
-[sub_resource type="LabelSettings" id="LabelSettings_relhn"]
-font = ExtResource("5_f2dxg")
-font_size = 48
-outline_size = 8
-outline_color = Color(0, 0, 0, 0.847059)
-shadow_size = 10
-shadow_color = Color(0, 0, 0, 0.313726)
-shadow_offset = Vector2(3, 3)
-
 [node name="Stage1" type="Node2D" groups=["stages"]]
 script = ExtResource("1_1tge3")
 
@@ -126,7 +118,6 @@ limit_right = 765
 limit_bottom = 46
 position_smoothing_enabled = true
 position_smoothing_speed = 1.5
-drag_vertical_enabled = true
 drag_top_margin = 0.4
 drag_bottom_margin = 0.0
 
@@ -277,28 +268,12 @@ libraries = {
 }
 autoplay = "color_cycle"
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." groups=["stage_ui"]]
+script = ExtResource("7_bjuw2")
 
 [node name="PauseMenu" parent="UI" instance=ExtResource("3_relhn")]
 unique_name_in_owner = true
 visible = false
-
-[node name="Label" type="Label" parent="UI/PauseMenu"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -63.0
-offset_top = -22.0
-offset_right = 63.0
-offset_bottom = 22.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Paused"
-label_settings = SubResource("LabelSettings_relhn")
-horizontal_alignment = 1
 
 [node name="StateChartDebugger" parent="UI" instance=ExtResource("3_bjuw2")]
 z_index = 99
@@ -306,6 +281,7 @@ offset_left = 796.0
 offset_top = 9.0
 offset_right = -10.0
 offset_bottom = -398.0
+enabled = false
 initial_node_to_watch = NodePath("../../Player")
 
 [node name="DebugText" type="Label" parent="UI"]
@@ -322,5 +298,3 @@ grow_vertical = 0
 [connection signal="body_exited" from="TriggerZones/ToNextStage" to="." method="_on_to_next_stage_body_exited"]
 [connection signal="body_entered" from="TriggerZones/ToNextStage2" to="." method="_on_to_next_stage_body_entered"]
 [connection signal="body_exited" from="TriggerZones/ToNextStage2" to="." method="_on_to_next_stage_body_exited"]
-[connection signal="pause" from="UI/PauseMenu" to="." method="_on_pause_menu_pause"]
-[connection signal="resume" from="UI/PauseMenu" to="." method="_on_pause_menu_resume"]

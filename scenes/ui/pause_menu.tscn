@@ -1,0 +1,122 @@
+[gd_scene load_steps=6 format=3 uid="uid://bf3k14kdi4j7c"]
+
+[ext_resource type="Script" uid="uid://b7hprdh6ygcj5" path="res://scripts/ui/pause_menu.gd" id="1_n87rw"]
+[ext_resource type="Shader" uid="uid://by3p0vc1y22e3" path="res://assets/pause_menu.gdshader" id="2_5d2l8"]
+[ext_resource type="LabelSettings" uid="uid://bp62ly32vprqu" path="res://assets/ui_label_option.tres" id="2_kukqi"]
+[ext_resource type="LabelSettings" uid="uid://cd7px3pct7pkj" path="res://assets/ui_label_option_selected.tres" id="3_5d2l8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7l7mv"]
+shader = ExtResource("2_5d2l8")
+shader_parameter/amount = 2.0
+
+[node name="PauseMenu" type="Control" node_paths=PackedStringArray("_options", "_cursor")]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n87rw")
+_options = [NodePath("Resume"), NodePath("Settings"), NodePath("Quit")]
+_cursor = NodePath("Cursor")
+_attach_cursor_to_option = 1
+_horizontal_navigation = false
+
+[node name="BlurBG" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_7l7mv")
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="Paused" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -126.0
+offset_top = -168.0
+offset_right = 126.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Paused"
+label_settings = ExtResource("2_kukqi")
+horizontal_alignment = 1
+
+[node name="Resume" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -132.0
+offset_top = -49.0
+offset_right = 132.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Resume"
+label_settings = ExtResource("3_5d2l8")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Settings" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -132.0
+offset_top = 18.0
+offset_right = 132.0
+offset_bottom = 83.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Settings"
+label_settings = ExtResource("2_kukqi")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Quit" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -177.0
+offset_top = 85.0
+offset_right = 177.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Quit Game"
+label_settings = ExtResource("2_kukqi")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Cursor" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -275.0
+offset_top = -49.0
+offset_right = -234.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "▶"
+label_settings = ExtResource("2_kukqi")
+horizontal_alignment = 1
+
+[connection signal="cancel" from="." to="." method="_resume"]
+[connection signal="option_highlighted" from="." to="." method="_on_option_highlighted"]
+[connection signal="option_selected" from="." to="." method="_on_option_selected"]

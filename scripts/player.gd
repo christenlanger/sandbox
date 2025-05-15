@@ -7,6 +7,7 @@ const DASH_SPEED = 2.5
 const JUMP_VELOCITY = -300.0
 const CAMERA_SPEED = 1.5
 const CAMERA_OFFSET = 0.5
+const CAMERA_PAN_DOWN_DELAY = 0.5
 
 # References
 @onready var _sprite: Sprite2D = $Sprite
@@ -26,9 +27,11 @@ var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 # Flags for player movement
 var _was_grounded := false
+var _is_dashing := false
 var _speed_multiplier := 1.0
 var _last_direction := 1.0
 var _long_fall := false
+var _crouched_pressed := 0.0
 
 
 func _ready() -> void:
@@ -83,7 +86,7 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	if is_on_floor():
 		if velocity.x == 0.0:
 			_animation_state_machine.travel("idle")
-		else:
+		elif not _is_dashing:
 			_animation_state_machine.travel("run")
 		
 		velocity.y = 0
@@ -110,11 +113,16 @@ func _on_crouch_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_pressed("ui_down"):
 		_state_chart.send_event("crouch")
 		_animation_state_machine.travel("crouch")
-		_camera.drag_vertical_offset = 0.5
+		_crouched_pressed = min(_crouched_pressed + delta, CAMERA_PAN_DOWN_DELAY)
+		if _crouched_pressed >= CAMERA_PAN_DOWN_DELAY:
+			if _camera.drag_vertical_offset < 0.5:
+				_camera.drag_vertical_offset = 0.5
 	elif Input.is_action_just_released("ui_down"):
+		_crouched_pressed = 0
 		_state_chart.send_event("stand")
 		_animation_state_machine.travel("idle")
 		_camera.drag_vertical_offset = 0.0
+	debug_text.emit(str(_crouched_pressed))
 
 # Enable double jump. Connect to this function for all enabled states
 func _on_jump_enabled_state_physics_processing(delta: float) -> void:
@@ -131,6 +139,7 @@ func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 func _on_dash_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("dash") and _last_direction != 0:
 		_speed_multiplier = DASH_SPEED
+		_is_dashing = true
 		_state_chart.send_event("dash")
 		_animation_state_machine.travel("dash")
 
@@ -147,7 +156,9 @@ func _on_dashing_state_physics_processing(delta: float) -> void:
 
 # Reset speed after grounded dash
 func _on_dash_end() -> void:
-	_reset_speed_multiplier()
+	_is_dashing = false
+	if is_on_floor():
+		_reset_speed_multiplier()
 
 
 # Reset speed on double jump
@@ -158,6 +169,7 @@ func _on_doublejump_jump() -> void:
 
 # Reset speed after bunny hop window expires
 func _on_bunnyhop_expire() -> void:
+	_is_dashing = false
 	_reset_speed_multiplier()
 
 
