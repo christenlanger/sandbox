@@ -1,10 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://smbqev04ocmd"]
+[gd_scene load_steps=2 format=3 uid="uid://smbqev04ocmd"]
 
 [ext_resource type="Script" uid="uid://dwvc34hw8q5qp" path="res://scripts/ui/options_ui.gd" id="1_a7uq2"]
-[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="2_ne5w5"]
-[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="3_ye3ti"]
-[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="4_liyg0"]
-[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_boedx"]
 
 [node name="OptionsUI" type="Control"]
 process_mode = 3
@@ -15,50 +11,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_a7uq2")
-
-[node name="StateChart" type="Node" parent="."]
-script = ExtResource("2_ne5w5")
-metadata/_custom_type_script = "uid://couw105c3bde4"
-
-[node name="Root" type="Node" parent="StateChart"]
-script = ExtResource("3_ye3ti")
-initial_state = NodePath("Closed")
-
-[node name="Closed" type="Node" parent="StateChart/Root"]
-script = ExtResource("4_liyg0")
-
-[node name="On Open" type="Node" parent="StateChart/Root/Closed"]
-script = ExtResource("5_boedx")
-to = NodePath("../../Open")
-event = &"open"
-delay_in_seconds = "0.0"
-
-[node name="Open" type="Node" parent="StateChart/Root"]
-script = ExtResource("3_ye3ti")
-initial_state = NodePath("Active")
-
-[node name="On Close" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("5_boedx")
-to = NodePath("../../Closed")
-event = &"close"
-delay_in_seconds = "0.0"
-
-[node name="Active" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("4_liyg0")
-
-[node name="On Modal" type="Node" parent="StateChart/Root/Open/Active"]
-script = ExtResource("5_boedx")
-to = NodePath("../../HasModal")
-event = &"open_modal"
-delay_in_seconds = "0.0"
-
-[node name="HasModal" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("4_liyg0")
-
-[node name="On Focus" type="Node" parent="StateChart/Root/Open/HasModal"]
-script = ExtResource("5_boedx")
-to = NodePath("../../Active")
-event = &"close_modal"
-delay_in_seconds = "0.0"
 
 [connection signal="cancel" from="." to="." method="_on_cancel"]

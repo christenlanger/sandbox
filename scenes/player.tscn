@@ -314,7 +314,7 @@ hframes = 5
 vframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 1)
+position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_smehm")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -328,12 +328,17 @@ tree_root = SubResource("AnimationNodeStateMachine_dt7fs")
 anim_player = NodePath("../AnimationPlayer")
 
 [node name="RayCastRight" type="RayCast2D" parent="."]
-position = Vector2(-1, 1)
-target_position = Vector2(6, 0)
+position = Vector2(-1, 2)
+target_position = Vector2(7, 0)
 
 [node name="RayCastLeft" type="RayCast2D" parent="."]
-position = Vector2(0, 1)
-target_position = Vector2(-5, 0)
+position = Vector2(0, 2)
+target_position = Vector2(-6, 0)
+
+[node name="RayCastDown" type="RayCast2D" parent="."]
+position = Vector2(0, 2)
+target_position = Vector2(0, 6)
+collision_mask = 4
 
 [node name="StateChart" type="Node" parent="."]
 script = ExtResource("3_dqkch")
@@ -520,8 +525,8 @@ event = &"enable_move"
 delay_in_seconds = "0.0"
 
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded" to="." method="_on_jump_enabled_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_crouch_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_crouch_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_dash_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_jump_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_dashing_state_physics_processing"]

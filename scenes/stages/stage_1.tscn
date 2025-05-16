@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=4 uid="uid://bpvbogkvtxrbp"]
+[gd_scene load_steps=19 format=4 uid="uid://bpvbogkvtxrbp"]
 
 [ext_resource type="Script" uid="uid://dkoxpbo7wwihb" path="res://scripts/stages/stage_1.gd" id="1_1tge3"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_relhn"]
@@ -9,10 +9,6 @@
 [ext_resource type="PackedScene" uid="uid://bdsiur7r08rsn" path="res://scenes/killzone.tscn" id="6_qm7fq"]
 [ext_resource type="Script" uid="uid://sda8fuloe460" path="res://scripts/stages/ui.gd" id="7_bjuw2"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="7_emlwg"]
-
-[sub_resource type="Curve" id="Curve_relhn"]
-_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
 
 [sub_resource type="Animation" id="Animation_pipme"]
 length = 0.001
@@ -106,8 +102,8 @@ unique_name_in_owner = true
 z_index = 5
 position = Vector2(0, -7)
 collision_layer = 2
+collision_mask = 5
 _camera = NodePath("Camera2D")
-_camera_curve = SubResource("Curve_relhn")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(4, 4)

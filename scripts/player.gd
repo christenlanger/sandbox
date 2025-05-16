@@ -16,9 +16,9 @@ const CAMERA_PAN_DOWN_DELAY = 0.5
 @onready var _state_chart: StateChart = $StateChart
 @onready var _ray_cast_right: RayCast2D = $RayCastRight
 @onready var _ray_cast_left: RayCast2D = $RayCastLeft
+@onready var _ray_cast_down: RayCast2D = $RayCastDown
 
 @export var _camera: Camera2D
-@export var _camera_curve: Curve
 
 signal debug_text
 
@@ -55,10 +55,6 @@ func _process(delta: float) -> void:
 		elif _last_direction < 0:
 			#_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
 			_camera.drag_horizontal_offset = CAMERA_OFFSET * -1
-
-
-func _physics_process(delta: float) -> void:
-	pass # placeholder
 
 
 func _on_can_move_state_physics_processing(delta: float) -> void:
@@ -124,15 +120,22 @@ func _on_crouch_enabled_state_physics_processing(delta: float) -> void:
 		_camera.drag_vertical_offset = 0.0
 	debug_text.emit(str(_crouched_pressed))
 
-# Enable double jump. Connect to this function for all enabled states
+# Process jump button including crouching state on one way platforms
 func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
-		velocity.y = JUMP_VELOCITY
-		_state_chart.send_event("jump")
-		
-		if _was_grounded:
-			_speed_multiplier *= 1.05
-			_animation_state_machine.travel("jump")
+		if _crouched_pressed and is_on_one_way_floor():
+			var timer: SceneTreeTimer = get_tree().create_timer(0.1)
+			
+			timer.timeout.connect(restore_collision.bind(self.collision_mask))
+			self.collision_mask = 0
+			_state_chart.send_event("airborne")
+		else:
+			velocity.y = JUMP_VELOCITY
+			_state_chart.send_event("jump")
+			
+			if _was_grounded:
+				_speed_multiplier *= 1.05
+				_animation_state_machine.travel("jump")
 
 
 # Enable dash. Typically only on grounded non-dashing state
@@ -196,3 +199,11 @@ func _on_long_fall_state_entered() -> void:
 
 func _on_rising_state_entered() -> void:
 	_long_fall = false
+
+
+func is_on_one_way_floor() -> bool:
+	return _ray_cast_down.is_colliding()
+
+
+func restore_collision(mask: int) -> void:
+	self.collision_mask = mask

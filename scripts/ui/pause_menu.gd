@@ -1,36 +1,39 @@
 extends OptionsUI
 
-@onready var _settings_menu: Control = $SettingsMenu
+@onready var _state_chart: StateChart = $StateChart
+@onready var settings_menu: OptionsUI = $SettingsMenu
 
-var _label_settings := {}
 var _is_paused := false
 
-enum LabelPresets {DEFAULT, SELECTED}
 
 func _ready() -> void:
-	_label_settings = {
-		LabelPresets.DEFAULT: load("res://assets/ui_label_option.tres"),
-		LabelPresets.SELECTED: load("res://assets/ui_label_option_selected.tres"),
-	}
+	if _enabled:
+		set_current(0)
+		super()
 
 
-# Open pause menu on specific key but prevent super if not paused
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel") and not _is_paused:
+# Open pause menu if closed
+func _on_closed_state_input(event: InputEvent) -> void:
+	if _enabled and event.is_action_pressed("ui_cancel"):
+		_state_chart.send_event("open")
 		_toggle_pause(true)
-	else:
-		super(event)
+		set_current(0)
+
+
+# Handle inputs while pause menu is opened
+func _on_active_state_input(event: InputEvent) -> void:
+	handle_input(event)
 
 
 # Signal handler for exiting pause
 func _resume() -> void:
+	_state_chart.send_event("close")
 	_toggle_pause(false)
 
 
 # Toggle pause method
 func _toggle_pause(is_paused: bool) -> void:
 	_is_paused = is_paused
-	_enabled = is_paused
 	self.visible = is_paused
 	get_tree().paused = is_paused
 
@@ -42,8 +45,9 @@ func _on_option_selected(option: int) -> void:
 		0:
 			_resume()
 		# Settings
-		1:
-			pass
+		1 when settings_menu.is_enabled():
+			settings_menu.open()
+			_state_chart.send_event("open_modal")
 		# Quit game
 		2:
 			get_tree().quit()
@@ -53,6 +57,13 @@ func _on_option_selected(option: int) -> void:
 func _on_option_highlighted(option: int) -> void:
 	for label in _options:
 		if label.get_index() == _options[option].get_index():
-			label.label_settings = _label_settings[LabelPresets.SELECTED]
+			label.label_settings = Global.label_settings[Global.LabelPresets.SELECTED]
 		else:
-			label.label_settings = _label_settings[LabelPresets.DEFAULT]
+			label.label_settings = Global.label_settings[Global.LabelPresets.DEFAULT]
+
+
+# When the settings menu is canceled
+func _on_settings_menu_cancel() -> void:
+	settings_menu.reset()
+	
+	_state_chart.send_event("close_modal")

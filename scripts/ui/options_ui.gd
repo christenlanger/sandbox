@@ -2,7 +2,11 @@ class_name OptionsUI
 
 extends Control
 
-@onready var _state_chart: StateChart = $StateChart
+# Be able to open the UI if enabled
+@export var _enabled: bool = true
+
+# Visible on load
+@export var _visible_on_load: bool = false
 
 # Set of labels as options. Change typing if you want to use other nodes
 @export var _options: Array[Label]
@@ -24,21 +28,26 @@ signal option_highlighted(option: int)
 signal option_selected(option: int)
 signal cancel
 
-var _enabled := false
 var _current_option := 0
 
 
-# Handle input events
-func _input(event: InputEvent) -> void:
-	if _enabled:
-		if _vertical_navigation and event.is_action_pressed("ui_up") or (_horizontal_navigation and event.is_action_pressed("ui_left")):
-			_goto_prev_option()
-		elif _vertical_navigation and event.is_action_pressed("ui_down") or (_horizontal_navigation and event.is_action_pressed("ui_right")):
-			_goto_next_option()
-		elif event.is_action_pressed("ui_accept"):
-			option_selected.emit(_current_option)
-		elif event.is_action_pressed("ui_cancel"):
-			cancel.emit()
+# Initialize
+func _ready() -> void:
+	self.visible = _visible_on_load
+	if _options.size() > 0:
+		_set_cursor_position(_current_option)
+
+
+# Call to handle input events
+func handle_input(event: InputEvent) -> void:
+	if _vertical_navigation and event.is_action_pressed("ui_up") or (_horizontal_navigation and event.is_action_pressed("ui_left")):
+		_goto_prev_option()
+	elif _vertical_navigation and event.is_action_pressed("ui_down") or (_horizontal_navigation and event.is_action_pressed("ui_right")):
+		_goto_next_option()
+	elif event.is_action_pressed("ui_accept"):
+		option_selected.emit(_current_option)
+	elif event.is_action_pressed("ui_cancel"):
+		cancel.emit()
 
 
 # Move selection to previous option
@@ -47,7 +56,7 @@ func _goto_prev_option() -> void:
 	if _current_option < 0:
 		_current_option = _options.size() - 1 if _wrap_around else 0
 	option_highlighted.emit(_current_option)
-	_set_cursor_position()
+	_set_cursor_position(_current_option)
 
 
 # Move selection to next option
@@ -56,13 +65,25 @@ func _goto_next_option() -> void:
 	if _current_option >= _options.size():
 		_current_option = 0 if _wrap_around else _options.size() - 1
 	option_highlighted.emit(_current_option)
-	_set_cursor_position()
+	_set_cursor_position(_current_option)
 
 
 # Move cursor to current option
-func _set_cursor_position() -> void:
+func _set_cursor_position(option: int) -> void:
 	if _cursor:
 		if _attach_cursor_to_option == AttachToCursor.X or _attach_cursor_to_option == AttachToCursor.BOTH:
-			_cursor.position.x = _options[_current_option].position.x + _attach_offset.x
+			_cursor.position.x = _options[option].position.x + _attach_offset.x
 		if _attach_cursor_to_option == AttachToCursor.Y or _attach_cursor_to_option == AttachToCursor.BOTH:
-			_cursor.position.y = _options[_current_option].position.y + _attach_offset.y
+			_cursor.position.y = _options[option].position.y + _attach_offset.y
+
+
+# Return _enabled for other nodes
+func is_enabled() -> bool:
+	return _enabled
+
+
+# Set current option
+func set_current(value: int) -> void:
+	_current_option = value
+	option_highlighted.emit(_current_option)
+	_set_cursor_position(_current_option)

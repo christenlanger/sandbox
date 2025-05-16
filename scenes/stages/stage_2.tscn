@@ -50,7 +50,7 @@ _data = {
 &"roll": SubResource("Animation_bnu0w")
 }
 
-[node name="Stage2" type="Node2D"]
+[node name="Stage2" type="Node2D" groups=["stages"]]
 script = ExtResource("1_llf8k")
 
 [node name="Player" parent="." node_paths=PackedStringArray("_camera") instance=ExtResource("2_tiiek")]
