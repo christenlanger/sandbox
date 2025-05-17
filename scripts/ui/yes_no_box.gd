@@ -4,6 +4,10 @@ extends OptionsUI
 
 @onready var _state_chart: StateChart = $StateChart
 
+signal select(confirm: bool)
+
+signal select(confirm: bool)
+
 
 # Change some properties
 func _ready() -> void:
