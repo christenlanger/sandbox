@@ -2,6 +2,16 @@ extends Node
 
 enum ConfigSettings {
 	DISPLAY_RESOLUTION,
+	CONTROL_KEY_DOWN,
+	CONTROL_KEY_LEFT,
+	CONTROL_KEY_RIGHT,
+	CONTROL_KEY_JUMP,
+	CONTROL_KEY_DASH,
+	CONTROL_PAD_DOWN,
+	CONTROL_PAD_LEFT,
+	CONTROL_PAD_RIGHT,
+	CONTROL_PAD_JUMP,
+	CONTROL_PAD_DASH,
 }
 
 enum DisplayPresets {
@@ -12,6 +22,7 @@ enum DisplayPresets {
 	RESOLUTION_FULLSCREEN
 }
 
+# Dictionary containing the game's settings
 var _settings_config = {}
 
 var current_config: Dictionary :
@@ -26,5 +37,6 @@ func _ready() -> void:
 
 func set_default_config() -> void:
 	_settings_config = {
-		ConfigSettings.DISPLAY_RESOLUTION: DisplayPresets.RESOLUTION_1280_720
+		ConfigSettings.DISPLAY_RESOLUTION: DisplayPresets.RESOLUTION_1280_720,
+		ConfigSettings.CONTROL_KEY_JUMP: ""
 	}

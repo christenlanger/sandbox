@@ -22,7 +22,7 @@ script = ExtResource("1_q5hnq")
 _visible_on_load = true
 _options = [NodePath("PanelContainer/VBoxContainer/HBoxContainer/Yes"), NodePath("PanelContainer/VBoxContainer/HBoxContainer/No")]
 _cursor = NodePath("Cursor")
-_attach_offset = Vector2(420, 0)
+_attach_offset = Vector2(-40, 0)
 _vertical_navigation = false
 metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
 

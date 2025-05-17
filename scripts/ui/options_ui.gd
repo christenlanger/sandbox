@@ -8,8 +8,8 @@ extends Control
 # Visible on load
 @export var _visible_on_load: bool = false
 
-# Set of labels as options. Change typing if you want to use other nodes
-@export var _options: Array[Label]
+# Set of nodes as options. Change typing if you want to use other nodes
+@export var _options: Array[Node]
 
 # Set cursor and behavior
 @export var _cursor: Node
@@ -28,14 +28,12 @@ signal option_highlighted(option: int)
 signal option_selected(option: int)
 signal cancel
 
-var _current_option := 0
+var current_option := 0
 
 
 # Initialize
 func _ready() -> void:
 	self.visible = _visible_on_load
-	if _options.size() > 0:
-		_set_cursor_position.call_deferred(_current_option)
 
 
 # Call to handle input events
@@ -45,36 +43,40 @@ func handle_input(event: InputEvent) -> void:
 	elif _vertical_navigation and event.is_action_pressed("ui_down") or (_horizontal_navigation and event.is_action_pressed("ui_right")):
 		_goto_next_option()
 	elif event.is_action_pressed("ui_accept"):
-		option_selected.emit(_current_option)
+		option_selected.emit(current_option)
 	elif event.is_action_pressed("ui_cancel"):
 		cancel.emit()
 
 
 # Move selection to previous option
-func _goto_prev_option() -> void:
-	_current_option -= 1
-	if _current_option < 0:
-		_current_option = _options.size() - 1 if _wrap_around else 0
-	option_highlighted.emit(_current_option)
-	_set_cursor_position(_current_option)
+func _goto_prev_option(step: int = 1) -> void:
+	if _wrap_around and current_option - step < 0:
+		current_option = _options.size() - 1
+	elif current_option - step >= 0:
+		current_option -= step
+	option_highlighted.emit(current_option)
+	_set_cursor_position(current_option)
 
 
 # Move selection to next option
-func _goto_next_option() -> void:
-	_current_option += 1
-	if _current_option >= _options.size():
-		_current_option = 0 if _wrap_around else _options.size() - 1
-	option_highlighted.emit(_current_option)
-	_set_cursor_position(_current_option)
+func _goto_next_option(step: int = 1) -> void:
+	if _wrap_around and current_option + step >= _options.size():
+		current_option = 0
+	elif current_option + step < _options.size():
+		current_option += step
+	option_highlighted.emit(current_option)
+	_set_cursor_position(current_option)
 
 
 # Move cursor to current option
 func _set_cursor_position(option: int) -> void:
-	if _cursor:
+	if _cursor and _options[option]:
+		var pos: Vector2 = _options[option].get_global_transform_with_canvas().get_origin()
+		
 		if _attach_cursor_to_option == AttachToCursor.X or _attach_cursor_to_option == AttachToCursor.BOTH:
-			_cursor.position.x = _options[option].position.x + _attach_offset.x
+			_cursor.position.x = pos.x + _attach_offset.x
 		if _attach_cursor_to_option == AttachToCursor.Y or _attach_cursor_to_option == AttachToCursor.BOTH:
-			_cursor.position.y = _options[option].position.y + _attach_offset.y
+			_cursor.position.y = pos.y + _attach_offset.y
 
 
 # Return _enabled for other nodes
@@ -84,6 +86,6 @@ func is_enabled() -> bool:
 
 # Set current option
 func set_current(value: int) -> void:
-	_current_option = value
-	option_highlighted.emit(_current_option)
-	_set_cursor_position(_current_option)
+	current_option = value
+	option_highlighted.emit(current_option)
+	_set_cursor_position.call_deferred(current_option)

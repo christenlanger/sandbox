@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cpy8lyds6schd"]
+[gd_scene load_steps=11 format=3 uid="uid://cpy8lyds6schd"]
 
 [ext_resource type="Script" uid="uid://bqf6agjqlb7il" path="res://scripts/ui/settings_menu.gd" id="1_mhswj"]
 [ext_resource type="LabelSettings" uid="uid://bp62ly32vprqu" path="res://assets/ui_label_option.tres" id="2_x3vyp"]
@@ -6,18 +6,29 @@
 [ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="4_ngbvi"]
 [ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="5_mishw"]
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="6_h271e"]
+[ext_resource type="Shader" uid="uid://by3p0vc1y22e3" path="res://assets/pause_menu.gdshader" id="6_ngbvi"]
+[ext_resource type="Script" uid="uid://dwvc34hw8q5qp" path="res://scripts/ui/options_ui.gd" id="8_mishw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mishw"]
+shader = ExtResource("6_ngbvi")
+shader_parameter/amount = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mishw"]
+bg_color = Color(0.328853, 0.557039, 0.749473, 1)
+shadow_size = 3
+shadow_offset = Vector2(5, 5)
 
 [node name="SettingsMenu" type="Control" node_paths=PackedStringArray("_options", "_cursor")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1280.0
+offset_bottom = 720.0
 script = ExtResource("1_mhswj")
-_options = [NodePath("VBoxContainer/Item1"), NodePath("VBoxContainer/Item2"), NodePath("VBoxContainer/Item3"), NodePath("VBoxContainer/Quit")]
+_options = [NodePath("VBoxContainer/DisplayContainer/Display"), NodePath("VBoxContainer/InputMapContainer/Controls"), NodePath("VBoxContainer/VBoxContainer/Save"), NodePath("VBoxContainer/VBoxContainer/Quit")]
 _cursor = NodePath("Cursor")
-_attach_cursor_to_option = 1
-_attach_offset = Vector2(0, 136)
+_attach_cursor_to_option = 2
+_attach_offset = Vector2(-40, 5)
 _horizontal_navigation = false
 metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
 
@@ -57,6 +68,55 @@ to = NodePath("../../HasModal")
 event = &"open_modal"
 delay_in_seconds = "0.0"
 
+[node name="On Display" type="Node" parent="StateChart/Root/Open/Active"]
+script = ExtResource("6_h271e")
+to = NodePath("../../DisplayMenu")
+event = &"open_display"
+delay_in_seconds = "0.0"
+
+[node name="On InputMap" type="Node" parent="StateChart/Root/Open/Active"]
+script = ExtResource("6_h271e")
+to = NodePath("../../InputMap")
+event = &"open_input_map"
+delay_in_seconds = "0.0"
+
+[node name="DisplayMenu" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("5_mishw")
+
+[node name="On Active" type="Node" parent="StateChart/Root/Open/DisplayMenu"]
+script = ExtResource("6_h271e")
+to = NodePath("../../Active")
+event = &"go_back"
+delay_in_seconds = "0.0"
+
+[node name="InputMap" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("4_ngbvi")
+initial_state = NodePath("Navigating")
+
+[node name="Navigating" type="Node" parent="StateChart/Root/Open/InputMap"]
+script = ExtResource("5_mishw")
+
+[node name="On Active" type="Node" parent="StateChart/Root/Open/InputMap/Navigating"]
+script = ExtResource("6_h271e")
+to = NodePath("../../../Active")
+event = &"go_back"
+delay_in_seconds = "0.0"
+
+[node name="On AwaitingInput" type="Node" parent="StateChart/Root/Open/InputMap/Navigating"]
+script = ExtResource("6_h271e")
+to = NodePath("../../AwaitingInput")
+event = &"await_input"
+delay_in_seconds = "0.0"
+
+[node name="AwaitingInput" type="Node" parent="StateChart/Root/Open/InputMap"]
+script = ExtResource("5_mishw")
+
+[node name="On Navigating" type="Node" parent="StateChart/Root/Open/InputMap/AwaitingInput"]
+script = ExtResource("6_h271e")
+to = NodePath("../../Navigating")
+event = &"cancel_input"
+delay_in_seconds = "0.0"
+
 [node name="HasModal" type="Node" parent="StateChart/Root/Open"]
 script = ExtResource("5_mishw")
 
@@ -66,11 +126,11 @@ to = NodePath("../../Active")
 event = &"close_modal"
 delay_in_seconds = "0.0"
 
-[node name="TempBG" type="ColorRect" parent="."]
+[node name="BlurBG" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_mishw")
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0.171637, 0.171637, 0.171637, 1)
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
@@ -82,37 +142,296 @@ text = "Settings"
 label_settings = ExtResource("2_x3vyp")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 144.0
-offset_top = 92.0
-offset_right = 471.0
-offset_bottom = 609.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -495.0
+offset_top = -280.0
+offset_right = 495.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Item1" type="Label" parent="VBoxContainer"]
+[node name="DisplayContainer" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 0
+
+[node name="Display" type="Label" parent="VBoxContainer/DisplayContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Display"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/DisplayContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/DisplayContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 70
+
+[node name="Label" type="Label" parent="VBoxContainer/DisplayContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
 text = "Windowed"
 label_settings = ExtResource("2_x3vyp")
-vertical_alignment = 1
 
-[node name="Item2" type="Label" parent="VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/DisplayContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/margin_right = 70
+
+[node name="Label" type="Label" parent="VBoxContainer/DisplayContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
 text = "Fullscreen"
 label_settings = ExtResource("2_x3vyp")
-vertical_alignment = 1
 
-[node name="Item3" type="Label" parent="VBoxContainer"]
+[node name="DisplayMenu" type="Control" parent="VBoxContainer/DisplayContainer" node_paths=PackedStringArray("_options", "_cursor")]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
-text = "Item 3"
+script = ExtResource("8_mishw")
+_visible_on_load = true
+_options = [NodePath("../HBoxContainer/MarginContainer"), NodePath("../HBoxContainer/MarginContainer2")]
+_cursor = NodePath("../../../Cursor")
+_attach_offset = Vector2(-40, 0)
+_vertical_navigation = false
+metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
+
+[node name="InputMapContainer" type="HBoxContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_vertical = 2
+
+[node name="Controls" type="Label" parent="VBoxContainer/InputMapContainer"]
+custom_minimum_size = Vector2(260, 45)
+layout_mode = 2
+size_flags_vertical = 0
+text = "Controls"
 label_settings = ExtResource("2_x3vyp")
 vertical_alignment = 1
 
-[node name="Quit" type="Label" parent="VBoxContainer"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/InputMapContainer"]
 layout_mode = 2
-size_flags_vertical = 3
-text = "Quit"
+size_flags_horizontal = 3
+columns = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer/InputMapContainer/GridContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+text = "Keyboard"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+text = "Gamepad"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="Left" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 6
+text = "Move Left"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="PanelContainer5" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="key_move_left" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer5"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="PanelContainer6" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="pad_move_left" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer6"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="Right" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 6
+text = "Move Right"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="PanelContainer7" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="key_move_right" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer7"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="PanelContainer8" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="pad_move_right" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer8"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="Crouch" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 6
+text = "Crouch"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="key_crouch" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer3"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="PanelContainer4" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="pad_crouch" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer4"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="Jump" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 6
+text = "Jump"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="PanelContainer9" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="key_jump" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer9"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="PanelContainer10" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="pad_jump" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer10"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="Dash" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 6
+text = "Dash"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="PanelContainer11" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="key_dash" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer11"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="PanelContainer12" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="pad_dash" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer12"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="InputMapMenu" type="Control" parent="VBoxContainer/InputMapContainer" node_paths=PackedStringArray("_options")]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("8_mishw")
+_options = [NodePath("../GridContainer/PanelContainer5"), NodePath("../GridContainer/PanelContainer6"), NodePath("../GridContainer/PanelContainer7"), NodePath("../GridContainer/PanelContainer8"), NodePath("../GridContainer/PanelContainer3"), NodePath("../GridContainer/PanelContainer4"), NodePath("../GridContainer/PanelContainer9"), NodePath("../GridContainer/PanelContainer10"), NodePath("../GridContainer/PanelContainer11"), NodePath("../GridContainer/PanelContainer12")]
+_wrap_around = false
+_attach_cursor_to_option = 2
+metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Restore" type="Label" parent="VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Restore defaults"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="Save" type="Label" parent="VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Apply"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="Quit" type="Label" parent="VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_vertical = 8
+text = "Exit"
 label_settings = ExtResource("2_x3vyp")
 vertical_alignment = 1
 
@@ -123,15 +442,57 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 88.0
-offset_top = 119.0
-offset_right = 109.0
-offset_bottom = 152.0
+offset_left = -528.0
+offset_top = -251.0
+offset_right = -507.0
+offset_bottom = -218.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "►"
 label_settings = ExtResource("2_x3vyp")
 
+[node name="InputMapBox" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -194.0
+offset_top = -79.0
+offset_right = 194.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mishw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InputMapBox"]
+layout_mode = 2
+
+[node name="InputType" type="Label" parent="InputMapBox/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Press a key for"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="InputAction" type="Label" parent="InputMapBox/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Move Left"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
 [connection signal="cancel" from="." to="." method="close"]
 [connection signal="option_selected" from="." to="." method="_on_option_selected"]
 [connection signal="state_input" from="StateChart/Root/Open/Active" to="." method="_on_active_state_input"]
+[connection signal="state_input" from="StateChart/Root/Open/DisplayMenu" to="." method="_on_display_menu_state_input"]
+[connection signal="state_input" from="StateChart/Root/Open/InputMap/Navigating" to="." method="_on_navigating_state_input"]
+[connection signal="state_input" from="StateChart/Root/Open/InputMap/AwaitingInput" to="." method="_on_awaiting_input_state_input"]
+[connection signal="cancel" from="VBoxContainer/DisplayContainer/DisplayMenu" to="." method="_on_display_menu_cancel"]
+[connection signal="option_selected" from="VBoxContainer/DisplayContainer/DisplayMenu" to="." method="_on_display_menu_option_selected"]
+[connection signal="cancel" from="VBoxContainer/InputMapContainer/InputMapMenu" to="." method="_on_input_map_menu_cancel"]
+[connection signal="option_highlighted" from="VBoxContainer/InputMapContainer/InputMapMenu" to="." method="_on_input_map_menu_option_highlighted"]
+[connection signal="option_selected" from="VBoxContainer/InputMapContainer/InputMapMenu" to="." method="_on_input_map_menu_option_selected"]
