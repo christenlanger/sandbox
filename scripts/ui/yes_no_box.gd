@@ -6,8 +6,6 @@ extends OptionsUI
 
 signal select(confirm: bool)
 
-signal select(confirm: bool)
-
 
 # Change some properties
 func _ready() -> void:
