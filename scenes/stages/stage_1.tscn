@@ -1,8 +1,7 @@
-[gd_scene load_steps=19 format=4 uid="uid://bpvbogkvtxrbp"]
+[gd_scene load_steps=18 format=4 uid="uid://bpvbogkvtxrbp"]
 
 [ext_resource type="Script" uid="uid://dkoxpbo7wwihb" path="res://scripts/stages/stage_1.gd" id="1_1tge3"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_relhn"]
-[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="3_bjuw2"]
 [ext_resource type="PackedScene" uid="uid://bf3k14kdi4j7c" path="res://scenes/ui/pause_menu.tscn" id="3_relhn"]
 [ext_resource type="TileSet" uid="uid://c4yprh07ttb2q" path="res://scenes/stages/stage_1.tres" id="4_mm8bn"]
 [ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="5_f2dxg"]
@@ -270,15 +269,6 @@ script = ExtResource("7_bjuw2")
 [node name="PauseMenu" parent="UI" instance=ExtResource("3_relhn")]
 unique_name_in_owner = true
 visible = false
-
-[node name="StateChartDebugger" parent="UI" instance=ExtResource("3_bjuw2")]
-z_index = 99
-offset_left = 796.0
-offset_top = 9.0
-offset_right = -10.0
-offset_bottom = -398.0
-enabled = false
-initial_node_to_watch = NodePath("../../Player")
 
 [node name="DebugText" type="Label" parent="UI"]
 anchors_preset = 2

@@ -1,7 +1,7 @@
 extends OptionsUI
 
-@onready var _state_chart: StateChart = $StateChart
 @onready var settings_menu: OptionsUI = $SettingsMenu
+@onready var _state_chart: StateChart = $StateChart
 
 var _is_paused := false
 
@@ -12,17 +12,16 @@ func _ready() -> void:
 		super()
 
 
-# Open pause menu if closed
+
+func _on_active_state_input(event: InputEvent) -> void:
+	handle_input(event)
+
+
 func _on_closed_state_input(event: InputEvent) -> void:
 	if _enabled and event.is_action_pressed("ui_cancel"):
 		_state_chart.send_event("open")
-		_toggle_pause(true)
 		set_current(0)
-
-
-# Handle inputs while pause menu is opened
-func _on_active_state_input(event: InputEvent) -> void:
-	handle_input(event)
+		_toggle_pause(true)
 
 
 # Signal handler for exiting pause
@@ -62,8 +61,7 @@ func _on_option_highlighted(option: int) -> void:
 			label.label_settings = Global.label_settings[Global.LabelPresets.DEFAULT]
 
 
-# When the settings menu is canceled
-func _on_settings_menu_cancel() -> void:
+# When the settings menu is closed
+func _on_settings_menu_settings_closed() -> void:
 	settings_menu.reset()
-	
 	_state_chart.send_event("close_modal")

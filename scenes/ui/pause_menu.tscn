@@ -28,6 +28,51 @@ _attach_cursor_to_option = 1
 _attach_offset = Vector2(0, 5)
 _horizontal_navigation = false
 
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("5_2rlsb")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("6_coo1x")
+initial_state = NodePath("Closed")
+
+[node name="Closed" type="Node" parent="StateChart/Root"]
+script = ExtResource("7_2jkta")
+
+[node name="On Open" type="Node" parent="StateChart/Root/Closed"]
+script = ExtResource("8_ht4ye")
+to = NodePath("../../Open")
+event = &"open"
+delay_in_seconds = "0.0"
+
+[node name="Open" type="Node" parent="StateChart/Root"]
+script = ExtResource("6_coo1x")
+initial_state = NodePath("Active")
+
+[node name="On Close" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("8_ht4ye")
+to = NodePath("../../Closed")
+event = &"close"
+delay_in_seconds = "0.0"
+
+[node name="Active" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("7_2jkta")
+
+[node name="On Modal" type="Node" parent="StateChart/Root/Open/Active"]
+script = ExtResource("8_ht4ye")
+to = NodePath("../../HasModal")
+event = &"open_modal"
+delay_in_seconds = "0.0"
+
+[node name="HasModal" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("7_2jkta")
+
+[node name="On Focus" type="Node" parent="StateChart/Root/Open/HasModal"]
+script = ExtResource("8_ht4ye")
+to = NodePath("../../Active")
+event = &"close_modal"
+delay_in_seconds = "0.0"
+
 [node name="BlurBG" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_7l7mv")
 layout_mode = 0
@@ -93,55 +138,11 @@ vertical_alignment = 1
 [node name="SettingsMenu" parent="." instance=ExtResource("5_coo1x")]
 visible = false
 
-[node name="StateChart" type="Node" parent="."]
-script = ExtResource("5_2rlsb")
-metadata/_custom_type_script = "uid://couw105c3bde4"
-
-[node name="Root" type="Node" parent="StateChart"]
-script = ExtResource("6_coo1x")
-initial_state = NodePath("Closed")
-
-[node name="Closed" type="Node" parent="StateChart/Root"]
-script = ExtResource("7_2jkta")
-
-[node name="On Open" type="Node" parent="StateChart/Root/Closed"]
-script = ExtResource("8_ht4ye")
-to = NodePath("../../Open")
-event = &"open"
-delay_in_seconds = "0.0"
-
-[node name="Open" type="Node" parent="StateChart/Root"]
-script = ExtResource("6_coo1x")
-initial_state = NodePath("Active")
-
-[node name="On Close" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("8_ht4ye")
-to = NodePath("../../Closed")
-event = &"close"
-delay_in_seconds = "0.0"
-
-[node name="Active" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("7_2jkta")
-
-[node name="On Modal" type="Node" parent="StateChart/Root/Open/Active"]
-script = ExtResource("8_ht4ye")
-to = NodePath("../../HasModal")
-event = &"open_modal"
-delay_in_seconds = "0.0"
-
-[node name="HasModal" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("7_2jkta")
-
-[node name="On Focus" type="Node" parent="StateChart/Root/Open/HasModal"]
-script = ExtResource("8_ht4ye")
-to = NodePath("../../Active")
-event = &"close_modal"
-delay_in_seconds = "0.0"
-
 [connection signal="cancel" from="." to="." method="_resume"]
 [connection signal="option_highlighted" from="." to="." method="_on_option_highlighted"]
 [connection signal="option_selected" from="." to="." method="_on_option_selected"]
-[connection signal="cancel" from="SettingsMenu" to="." method="_on_settings_menu_cancel"]
-[connection signal="settings_updated" from="SettingsMenu" to="." method="_on_settings_menu_settings_updated"]
 [connection signal="state_input" from="StateChart/Root/Closed" to="." method="_on_closed_state_input"]
 [connection signal="state_input" from="StateChart/Root/Open/Active" to="." method="_on_active_state_input"]
+[connection signal="cancel" from="SettingsMenu" to="." method="_on_settings_menu_cancel"]
+[connection signal="settings_closed" from="SettingsMenu" to="." method="_on_settings_menu_settings_closed"]
+[connection signal="settings_updated" from="SettingsMenu" to="." method="_on_settings_menu_settings_updated"]

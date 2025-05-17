@@ -1,0 +1,93 @@
+[gd_scene load_steps=7 format=3 uid="uid://esqjteoh68o0"]
+
+[ext_resource type="Script" uid="uid://dcfmry2g1twl8" path="res://scripts/ui/yes_no_box.gd" id="1_q5hnq"]
+[ext_resource type="LabelSettings" uid="uid://bp62ly32vprqu" path="res://assets/ui_label_option.tres" id="2_n67xm"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="2_twh0j"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="3_n67xm"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="4_5ffb4"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_roe0p"]
+
+[node name="YesNoBox" type="Control" node_paths=PackedStringArray("_options", "_cursor")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_q5hnq")
+_visible_on_load = true
+_options = [NodePath("PanelContainer/VBoxContainer/HBoxContainer/Yes"), NodePath("PanelContainer/VBoxContainer/HBoxContainer/No")]
+_cursor = NodePath("Cursor")
+_attach_offset = Vector2(20, 0)
+_vertical_navigation = false
+metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("2_twh0j")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("3_n67xm")
+initial_state = NodePath("Open")
+
+[node name="Open" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_5ffb4")
+
+[node name="On Close" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("5_roe0p")
+to = NodePath("../../Closed")
+event = &"close"
+delay_in_seconds = "0.0"
+
+[node name="Closed" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_5ffb4")
+
+[node name="On Open" type="Node" parent="StateChart/Root/Closed"]
+script = ExtResource("5_roe0p")
+to = NodePath("../../Open")
+event = &"open"
+delay_in_seconds = "0.0"
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 380.0
+offset_bottom = 108.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 37)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Title"
+label_settings = ExtResource("2_n67xm")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Yes" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Yes"
+label_settings = ExtResource("2_n67xm")
+horizontal_alignment = 1
+
+[node name="No" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "No"
+label_settings = ExtResource("2_n67xm")
+horizontal_alignment = 1
+
+[node name="Cursor" type="Label" parent="."]
+layout_mode = 2
+offset_left = 26.0
+offset_top = 57.0
+offset_right = 47.0
+offset_bottom = 90.0
+text = "►"
+label_settings = ExtResource("2_n67xm")
+
+[connection signal="option_selected" from="." to="." method="_on_option_selected"]
+[connection signal="state_input" from="StateChart/Root/Open" to="." method="_on_open_state_input"]

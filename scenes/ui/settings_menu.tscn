@@ -21,6 +21,51 @@ _attach_offset = Vector2(-50, 80)
 _horizontal_navigation = false
 metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
 
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("3_ywggk")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("4_ngbvi")
+initial_state = NodePath("Closed")
+
+[node name="Closed" type="Node" parent="StateChart/Root"]
+script = ExtResource("5_mishw")
+
+[node name="On Open" type="Node" parent="StateChart/Root/Closed"]
+script = ExtResource("6_h271e")
+to = NodePath("../../Open")
+event = &"open"
+delay_in_seconds = "0.0"
+
+[node name="Open" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_ngbvi")
+initial_state = NodePath("Active")
+
+[node name="On Close" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("6_h271e")
+to = NodePath("../../Closed")
+event = &"close"
+delay_in_seconds = "0.0"
+
+[node name="Active" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("5_mishw")
+
+[node name="On Modal" type="Node" parent="StateChart/Root/Open/Active"]
+script = ExtResource("6_h271e")
+to = NodePath("../../HasModal")
+event = &"open_modal"
+delay_in_seconds = "0.0"
+
+[node name="HasModal" type="Node" parent="StateChart/Root/Open"]
+script = ExtResource("5_mishw")
+
+[node name="On Focus" type="Node" parent="StateChart/Root/Open/HasModal"]
+script = ExtResource("6_h271e")
+to = NodePath("../../Active")
+event = &"close_modal"
+delay_in_seconds = "0.0"
+
 [node name="TempBG" type="ColorRect" parent="."]
 layout_mode = 0
 offset_right = 1280.0
@@ -70,51 +115,6 @@ size_flags_vertical = 10
 text = "Quit"
 label_settings = ExtResource("2_x3vyp")
 vertical_alignment = 1
-
-[node name="StateChart" type="Node" parent="."]
-script = ExtResource("3_ywggk")
-metadata/_custom_type_script = "uid://couw105c3bde4"
-
-[node name="Root" type="Node" parent="StateChart"]
-script = ExtResource("4_ngbvi")
-initial_state = NodePath("Closed")
-
-[node name="Closed" type="Node" parent="StateChart/Root"]
-script = ExtResource("5_mishw")
-
-[node name="On Open" type="Node" parent="StateChart/Root/Closed"]
-script = ExtResource("6_h271e")
-to = NodePath("../../Open")
-event = &"open"
-delay_in_seconds = "0.0"
-
-[node name="Open" type="Node" parent="StateChart/Root"]
-script = ExtResource("4_ngbvi")
-initial_state = NodePath("Active")
-
-[node name="On Close" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("6_h271e")
-to = NodePath("../../Closed")
-event = &"close"
-delay_in_seconds = "0.0"
-
-[node name="Active" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("5_mishw")
-
-[node name="On Modal" type="Node" parent="StateChart/Root/Open/Active"]
-script = ExtResource("6_h271e")
-to = NodePath("../../HasModal")
-event = &"open_modal"
-delay_in_seconds = "0.0"
-
-[node name="HasModal" type="Node" parent="StateChart/Root/Open"]
-script = ExtResource("5_mishw")
-
-[node name="On Focus" type="Node" parent="StateChart/Root/Open/HasModal"]
-script = ExtResource("6_h271e")
-to = NodePath("../../Active")
-event = &"close_modal"
-delay_in_seconds = "0.0"
 
 [connection signal="cancel" from="." to="." method="close"]
 [connection signal="option_highlighted" from="." to="." method="_on_option_highlighted"]
