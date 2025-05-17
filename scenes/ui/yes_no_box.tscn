@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://esqjteoh68o0"]
+[gd_scene load_steps=8 format=3 uid="uid://esqjteoh68o0"]
 
 [ext_resource type="Script" uid="uid://dcfmry2g1twl8" path="res://scripts/ui/yes_no_box.gd" id="1_q5hnq"]
 [ext_resource type="LabelSettings" uid="uid://bp62ly32vprqu" path="res://assets/ui_label_option.tres" id="2_n67xm"]
@@ -7,14 +7,22 @@
 [ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="4_5ffb4"]
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_roe0p"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_twh0j"]
+bg_color = Color(0.188371, 0.188371, 0.188371, 1)
+shadow_color = Color(0, 0, 0, 0.215686)
+shadow_size = 10
+shadow_offset = Vector2(5.03, 6.15)
+
 [node name="YesNoBox" type="Control" node_paths=PackedStringArray("_options", "_cursor")]
 layout_mode = 3
 anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
 script = ExtResource("1_q5hnq")
 _visible_on_load = true
 _options = [NodePath("PanelContainer/VBoxContainer/HBoxContainer/Yes"), NodePath("PanelContainer/VBoxContainer/HBoxContainer/No")]
 _cursor = NodePath("Cursor")
-_attach_offset = Vector2(20, 0)
+_attach_offset = Vector2(420, 0)
 _vertical_navigation = false
 metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
 
@@ -45,9 +53,19 @@ event = &"open"
 delay_in_seconds = "0.0"
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-layout_mode = 0
-offset_right = 380.0
-offset_bottom = 108.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -54.0
+offset_right = 190.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_twh0j")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2
@@ -60,7 +78,7 @@ size_flags_vertical = 1
 text = "Title"
 label_settings = ExtResource("2_n67xm")
 horizontal_alignment = 1
-vertical_alignment = 1
+vertical_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -68,24 +86,31 @@ size_flags_vertical = 3
 
 [node name="Yes" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 text = "Yes"
 label_settings = ExtResource("2_n67xm")
 horizontal_alignment = 1
 
 [node name="No" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 text = "No"
 label_settings = ExtResource("2_n67xm")
 horizontal_alignment = 1
 
 [node name="Cursor" type="Label" parent="."]
-layout_mode = 2
-offset_left = 26.0
-offset_top = 57.0
-offset_right = 47.0
-offset_bottom = 90.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = 3.0
+offset_right = -136.0
+offset_bottom = 36.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "►"
 label_settings = ExtResource("2_n67xm")
 

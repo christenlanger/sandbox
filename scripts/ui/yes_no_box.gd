@@ -4,6 +4,7 @@ extends OptionsUI
 
 @onready var _state_chart: StateChart = $StateChart
 
+signal confirm(option: bool)
 
 # Change some properties
 func _ready() -> void:
@@ -18,9 +19,5 @@ func _on_open_state_input(event: InputEvent) -> void:
 
 # Handle options
 func _on_option_selected(option: int) -> void:
-	if option == 0:
-		print("Yes")
-	else:
-		print("No")
-	
 	# Close this dialog box
+	confirm.emit(not option)

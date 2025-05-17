@@ -35,7 +35,7 @@ var _current_option := 0
 func _ready() -> void:
 	self.visible = _visible_on_load
 	if _options.size() > 0:
-		_set_cursor_position(_current_option)
+		_set_cursor_position.call_deferred(_current_option)
 
 
 # Call to handle input events

@@ -37,6 +37,7 @@ func close() -> void:
 		_confirm_menu = load(Global.scene_paths[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
 		_confirm_menu.title = "Apply changes?"
 		_confirm_menu.cancel.connect(_cancel_close)
+		_confirm_menu.confirm.connect(_close_with_config)
 		add_child(_confirm_menu)
 		_state_chart.send_event("open_modal")
 	else:
@@ -60,10 +61,15 @@ func _cancel_close() -> void:
 
 
 # Close the settings menu with changed configs
-func _close_with_config() -> void:
-	# Emit new settings to be handled by parent
-	settings_updated.emit(_config_settings)
+func _close_with_config(option) -> void:
+	# If signal is true, emit new settings to be handled by parent. Otherwise discard.
+	if option:
+		settings_updated.emit(_config_settings)
 	
+	# Close the settings screen regardless
+	_state_chart.send_event("close_modal")
+	if _confirm_menu:
+		_confirm_menu.queue_free()
 	_confirm_close()
 
 

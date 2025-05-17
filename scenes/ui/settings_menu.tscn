@@ -1,14 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://cpy8lyds6schd"]
+[gd_scene load_steps=7 format=3 uid="uid://cpy8lyds6schd"]
 
 [ext_resource type="Script" uid="uid://bqf6agjqlb7il" path="res://scripts/ui/settings_menu.gd" id="1_mhswj"]
 [ext_resource type="LabelSettings" uid="uid://bp62ly32vprqu" path="res://assets/ui_label_option.tres" id="2_x3vyp"]
-[ext_resource type="LabelSettings" uid="uid://cd7px3pct7pkj" path="res://assets/ui_label_option_selected.tres" id="3_ngbvi"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="3_ywggk"]
 [ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="4_ngbvi"]
 [ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="5_mishw"]
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="6_h271e"]
 
-[node name="SettingsMenu" type="Control" node_paths=PackedStringArray("_options")]
+[node name="SettingsMenu" type="Control" node_paths=PackedStringArray("_options", "_cursor")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 0
@@ -16,8 +15,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_mhswj")
 _options = [NodePath("VBoxContainer/Item1"), NodePath("VBoxContainer/Item2"), NodePath("VBoxContainer/Item3"), NodePath("VBoxContainer/Quit")]
+_cursor = NodePath("Cursor")
 _attach_cursor_to_option = 1
-_attach_offset = Vector2(-50, 80)
+_attach_offset = Vector2(0, 136)
 _horizontal_navigation = false
 metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
 
@@ -85,14 +85,14 @@ label_settings = ExtResource("2_x3vyp")
 layout_mode = 0
 offset_left = 144.0
 offset_top = 92.0
-offset_right = 1112.0
+offset_right = 471.0
 offset_bottom = 609.0
 
 [node name="Item1" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Windowed"
-label_settings = ExtResource("3_ngbvi")
+label_settings = ExtResource("2_x3vyp")
 vertical_alignment = 1
 
 [node name="Item2" type="Label" parent="VBoxContainer"]
@@ -111,12 +111,27 @@ vertical_alignment = 1
 
 [node name="Quit" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 10
+size_flags_vertical = 3
 text = "Quit"
 label_settings = ExtResource("2_x3vyp")
 vertical_alignment = 1
 
+[node name="Cursor" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 88.0
+offset_top = 119.0
+offset_right = 109.0
+offset_bottom = 152.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "►"
+label_settings = ExtResource("2_x3vyp")
+
 [connection signal="cancel" from="." to="." method="close"]
-[connection signal="option_highlighted" from="." to="." method="_on_option_highlighted"]
 [connection signal="option_selected" from="." to="." method="_on_option_selected"]
 [connection signal="state_input" from="StateChart/Root/Open/Active" to="." method="_on_active_state_input"]
