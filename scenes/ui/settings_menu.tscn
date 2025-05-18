@@ -243,6 +243,37 @@ text = "Gamepad"
 label_settings = ExtResource("2_x3vyp")
 vertical_alignment = 1
 
+[node name="Up" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 6
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="PanelContainer13" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="key_up" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer13"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
+[node name="PanelContainer14" type="PanelContainer" parent="VBoxContainer/InputMapContainer/GridContainer"]
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="pad_up" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer/PanelContainer14"]
+layout_mode = 2
+text = "Up"
+label_settings = ExtResource("2_x3vyp")
+horizontal_alignment = 1
+
 [node name="Left" type="Label" parent="VBoxContainer/InputMapContainer/GridContainer"]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
@@ -402,7 +433,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("8_mishw")
-_options = [NodePath("../GridContainer/PanelContainer5"), NodePath("../GridContainer/PanelContainer6"), NodePath("../GridContainer/PanelContainer7"), NodePath("../GridContainer/PanelContainer8"), NodePath("../GridContainer/PanelContainer3"), NodePath("../GridContainer/PanelContainer4"), NodePath("../GridContainer/PanelContainer9"), NodePath("../GridContainer/PanelContainer10"), NodePath("../GridContainer/PanelContainer11"), NodePath("../GridContainer/PanelContainer12")]
+_options = [NodePath("../GridContainer/PanelContainer13"), NodePath("../GridContainer/PanelContainer14"), NodePath("../GridContainer/PanelContainer5"), NodePath("../GridContainer/PanelContainer6"), NodePath("../GridContainer/PanelContainer7"), NodePath("../GridContainer/PanelContainer8"), NodePath("../GridContainer/PanelContainer3"), NodePath("../GridContainer/PanelContainer4"), NodePath("../GridContainer/PanelContainer9"), NodePath("../GridContainer/PanelContainer10"), NodePath("../GridContainer/PanelContainer11"), NodePath("../GridContainer/PanelContainer12")]
 _wrap_around = false
 _attach_cursor_to_option = 2
 metadata/_custom_type_script = "uid://dwvc34hw8q5qp"

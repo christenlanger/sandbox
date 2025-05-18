@@ -13,6 +13,7 @@ var _confirm_menu: OptionsUI
 # Input actions to display. Note that this is dependent on the display order
 # Check for a better implementation in the future
 var _input_actions := {
+	Global.action_list[Global.ActionList.UP]: "Up",
 	Global.action_list[Global.ActionList.LEFT]: "Move Left",
 	Global.action_list[Global.ActionList.RIGHT]: "Move Right",
 	Global.action_list[Global.ActionList.DOWN]: "Crouch",
@@ -21,7 +22,7 @@ var _input_actions := {
 }
 
 var _input_is_gamepad := 0
-
+var _current_input_map_action : String
 
 
 signal settings_updated(options: Dictionary)
@@ -201,6 +202,7 @@ func _on_input_map_menu_option_selected(option: int) -> void:
 	input_map_box.get_node("VBoxContainer/InputAction").text = _input_actions.values()[floor(option / 2)]
 	
 	input_map_box.visible = true
+	_current_input_map_action = _input_actions.keys()[floor(option / 2)]
 	_state_chart.send_event("await_input")
 
 
@@ -208,8 +210,13 @@ func _on_awaiting_input_state_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		input_map_box.visible = false
 		_state_chart.send_event("cancel_input")
+	elif _remap_input(event):
+		input_map_box.visible = false
+		_update_input_map()
+		_state_chart.send_event("cancel_input")
 	else:
-		_remap_input(event)
+		# Invalid input
+		pass
 
 
 # Update the text for the input mapping
@@ -219,19 +226,57 @@ func _update_input_map() -> void:
 		var action = key_input.name.right(-4)
 		for input_event in InputMap.action_get_events(action):
 			if input_event is InputEventKey:
-				key_input.text = input_event.as_text()
+				key_input.text = _shorten_event_name(input_event.as_text())
 		
 	# Fill all gamepad maps
 	for pad_input in input_map_container.find_children("pad_*", "Label"):
 		var action = pad_input.name.right(-4)
 		for input_event in InputMap.action_get_events(action):
 			if input_event is InputEventJoypadButton:
-				pad_input.text = input_event.as_text()
+				pad_input.text = _shorten_event_name(input_event.as_text())
 
 
 # Check if we can remap the input
-func _remap_input(event):
-	pass
+func _remap_input(event: InputEvent) -> bool:
+	var is_valid := false
+	if event.is_pressed() and not event.is_echo():
+		print(event)
+		if (event is InputEventKey and not _input_is_gamepad) or (event is InputEventJoypadButton and _input_is_gamepad):
+			var mapped = _mapped_action(event)
+			var action_events = InputMap.action_get_events(_current_input_map_action)
+			var prev_action_events = action_events.duplicate()
+			
+			# Make sure current key or button being mapped is limited to that type
+			for i in action_events.size():
+				if action_events[i] is InputEventKey and event is InputEventKey:
+					action_events[i] = event
+				elif action_events[i] is InputEventJoypadButton and event is InputEventJoypadButton:
+					action_events[i] = event
+			
+			# Add new binding if the new key doesn't match an existing bind.
+			if mapped != _current_input_map_action:
+				InputMap.action_erase_events(_current_input_map_action)
+				for action_event in action_events:
+					InputMap.action_add_event(_current_input_map_action, action_event)
+				
+				# Swap bindings with existing ones
+				if mapped != "":
+					var old_action_events = InputMap.action_get_events(mapped)
+					
+					for prev_event in prev_action_events:
+						for i in old_action_events.size():
+							if old_action_events[i] is InputEventKey and prev_event is InputEventKey:
+								old_action_events[i] = prev_event
+							elif old_action_events[i] is InputEventJoypadButton and prev_event is InputEventJoypadButton:
+								old_action_events[i] = prev_event
+					
+					InputMap.action_erase_events(mapped)
+					for action_event in old_action_events:
+						InputMap.action_add_event(mapped, action_event)
+				
+				is_valid = true
+		
+	return is_valid
 
 
 func _get_label_from_node(node: Node, name: String) -> Label:
@@ -244,5 +289,21 @@ func _get_label_from_node(node: Node, name: String) -> Label:
 
 
 func _shorten_event_name(event_name: String) -> String:
+	var short_name := event_name
 	
-	return event_name
+	# Match patterns for keyboard
+	if event_name.match("* (Physical)"):
+		short_name = event_name.left(-11)
+	elif event_name.match("Joypad Button*"):
+		short_name = event_name.get_slice(" ", 2)
+	
+	return short_name
+
+
+func _mapped_action(event: InputEvent) -> String:
+	var action_list := InputMap.get_actions()
+	
+	for action in action_list:
+		if not action.begins_with("ui_") and InputMap.action_has_event(action, event):
+			return action
+	return ""

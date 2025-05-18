@@ -37,7 +37,7 @@ func _on_clear_zone_body_entered(body: Node2D) -> void:
 
 # End of stage signal emit
 func _input(event: InputEvent) -> void:
-	if _can_clear and event.is_action_pressed("ui_up"):
+	if _can_clear and event.is_action_pressed(Global.action_list[Global.ActionList.UP]):
 		stage_end.emit()
 
 
