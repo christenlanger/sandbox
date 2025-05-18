@@ -5,6 +5,7 @@ extends OptionsUI
 @onready var input_map_menu: OptionsUI = %InputMapMenu
 @onready var input_map_box: PanelContainer = %InputMapBox
 @onready var input_map_container: HBoxContainer = %InputMapContainer
+@onready var display_container: HBoxContainer = %DisplayContainer
 
 var _config_settings = {}
 var _config_changed := false
@@ -47,27 +48,36 @@ func open() -> void:
 	self.visible = true
 	
 	# Grab the current settings
-	_config_settings = Config.current_config.duplicate()
+	_config_settings = Config.current_config.duplicate(true)
 	
 	# Populate the input map
 	_update_input_map()
+	
+	# Update other settings
+	display_stored_settings()
 	
 	# Inform the state chart
 	_state_chart.send_event("open")
 
 
 # Close the menu
-func close() -> void:
-	# If settings were changed, ask to confirm
-	if _config_changed:
-		_confirm_menu = load(Global.scene_paths[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
-		_confirm_menu.title = "Apply changes?"
-		_confirm_menu.cancel.connect(_cancel_close)
-		_confirm_menu.confirm.connect(_close_with_config)
-		add_child(_confirm_menu)
-		_state_chart.send_event("open_modal")
-	else:
-		_confirm_close()
+func close(option: int = 0) -> void:
+	_confirm_close()
+	
+	##	Previously confirming changes and applying only on exit attempt
+	#	All setting changes are now applied immediately to keep UI simple
+	#	Previous code is commented out in case there's a change
+	# 
+	# # If settings were changed, ask to confirm
+	# if _config_changed:
+	# 	_confirm_menu = load(Global.scene_paths[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
+	# 	_confirm_menu.title = "Apply changes?"
+	# 	_confirm_menu.cancel.connect(_cancel_close)
+	# 	_confirm_menu.confirm.connect(_close_with_config)
+	# 	add_child(_confirm_menu)
+	# 	_state_chart.send_event("open_modal")
+	# else:
+	# 	_confirm_close()
 
 
 # Actually close the window after checks
@@ -80,14 +90,14 @@ func _confirm_close() -> void:
 
 
 # Cancel the close attempt
-func _cancel_close() -> void:
+func _cancel_close(option: int = 0) -> void:
 	_state_chart.send_event("close_modal")
 	if _confirm_menu:
 		_confirm_menu.queue_free()
 
 
 # Close the settings menu with changed configs
-func _close_with_config(option) -> void:
+func _close_with_config(option: int) -> void:
 	# If signal is true, emit new settings to be handled by parent. Otherwise discard.
 	if option:
 		settings_updated.emit(_config_settings)
@@ -97,6 +107,20 @@ func _close_with_config(option) -> void:
 	if _confirm_menu:
 		_confirm_menu.queue_free()
 	_confirm_close()
+
+
+# Update selected settings
+func display_stored_settings() -> void:
+	# Display mode
+	var display_mode := {
+		"Windowed": DisplayServer.WINDOW_MODE_WINDOWED,
+		"Fullscreen": DisplayServer.WINDOW_MODE_FULLSCREEN,
+	}
+	
+	for mode in display_mode.keys():
+		var label := _get_label_from_node(display_container, mode)
+		if label and _config_settings[Config.ConfigSettings.DISPLAY_MODE] == display_mode[mode]:
+			label.label_settings = Global.label_settings[Global.LabelPresets.SELECTED]
 
 
 # Reset selections
@@ -118,15 +142,38 @@ func _on_option_selected(option: int) -> void:
 			_state_chart.send_event("open_input_map")
 			input_map_menu.set_current(0)
 		
-		# Save settings without closing
-		2 when _config_changed:
-			_config_changed = false
-			settings_updated.emit(_config_settings)
-			# todo: confirmation dialog
+		# Restore everything to default
+		2:
+			_confirm_menu = load(Global.scene_paths[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
+			_confirm_menu.title = "Reset settings to default?"
+			_confirm_menu.cancel.connect(_on_default_settings_cancel)
+			_confirm_menu.confirm.connect(_on_default_settings_apply)
+			add_child(_confirm_menu)
+			_state_chart.send_event("open_modal")
+			pass
 		
-		# Close settings menu
+		# Save and close settings menu
 		options_count:
 			cancel.emit()
+
+
+# Cancel restore default
+func _on_default_settings_cancel(option: int = 0) -> void:
+	_state_chart.send_event("close_modal")
+	if _confirm_menu:
+		_confirm_menu.queue_free()
+
+
+# Apply restore default
+func _on_default_settings_apply(option: int) -> void:
+	if option:
+		Config.apply_default_config()
+		display_stored_settings()
+		_update_input_map()
+
+	_state_chart.send_event("close_modal")
+	if _confirm_menu:
+		_confirm_menu.queue_free()
 
 
 # Change a specific option
@@ -135,49 +182,69 @@ func change_setting(key, value) -> void:
 	_config_changed = true
 
 
-func _on_display_menu_cancel() -> void:
+func _on_display_menu_cancel(option: int = 0) -> void:
 	_state_chart.send_event("go_back")
-	set_current(0)
+	set_current(option)
 
 
 func _on_display_menu_state_input(event: InputEvent) -> void:
-	display_menu.handle_input(event)
+	if event.is_action_pressed("ui_left") and display_menu.current_option == 0:
+		display_menu.cancel.emit(current_option)
+	elif event.is_action_pressed("ui_down"):
+		display_menu.cancel.emit(current_option + 1)
+	else:
+		display_menu.handle_input(event)
 
 
+# Change display based on selection
 func _on_display_menu_option_selected(option: int) -> void:
 	var options = [
-		Config.DisplayPresets.RESOLUTION_1280_720,
-		Config.DisplayPresets.RESOLUTION_FULLSCREEN
+		DisplayServer.WINDOW_MODE_WINDOWED,
+		DisplayServer.WINDOW_MODE_FULLSCREEN
 	]
-	change_setting(Config.ConfigSettings.DISPLAY_RESOLUTION, options[option])
-	_on_display_menu_cancel()
+	DisplayServer.window_set_mode(options[option])
+	
+	var label_node_names = ["Windowed", "Fullscreen"]
+	for i in label_node_names.size():
+		var label_node := _get_label_from_node(display_container, label_node_names[i])
+		if label_node and i == option:
+			label_node.label_settings = Global.label_settings[Global.LabelPresets.SELECTED]
+		else:
+			label_node.label_settings = Global.label_settings[Global.LabelPresets.DEFAULT]
+	
+	change_setting(Config.ConfigSettings.DISPLAY_MODE, options[option])
 
 
 # Go back to top menu
-func _on_input_map_menu_cancel() -> void:
+func _on_input_map_menu_cancel(option: int = 0) -> void:
 	input_map_menu._options.map(func(e):
 		if e is PanelContainer:
 			e.set("theme_override_styles/panel", null)
 		return e
 	)
 	_state_chart.send_event("go_back")
-	set_current(1)
+	set_current(option)
 
 
 # Handle input map menu differently
 func _on_navigating_state_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_right") and input_map_menu.current_option % 2 == 0:
 		input_map_menu._goto_next_option()
-	elif event.is_action_pressed("ui_left") and input_map_menu.current_option % 2 == 1:
-		input_map_menu._goto_prev_option()
+	elif event.is_action_pressed("ui_left"):
+		if input_map_menu.current_option % 2 == 1:
+			input_map_menu._goto_prev_option()
+		else:
+			input_map_menu.cancel.emit(current_option)
 	elif event.is_action_pressed("ui_down"):
-		input_map_menu._goto_next_option(2)
+		if not input_map_menu._goto_next_option(2):
+			input_map_menu.cancel.emit(current_option + 1)
 	elif event.is_action_pressed("ui_up"):
-		input_map_menu._goto_prev_option(2)
+		if not input_map_menu._goto_prev_option(2):
+			input_map_menu.cancel.emit(current_option)
 	elif event.is_action_pressed("ui_accept"):
 		input_map_menu.option_selected.emit(input_map_menu.current_option)
 	elif event.is_action_pressed("ui_cancel"):
-		input_map_menu.cancel.emit()
+		input_map_menu.cancel.emit(current_option)
 
 
 # Highlight the current action to be mapped
@@ -244,7 +311,7 @@ func _remap_input(event: InputEvent) -> bool:
 		if (event is InputEventKey and not _input_is_gamepad) or (event is InputEventJoypadButton and _input_is_gamepad):
 			var mapped = _mapped_action(event)
 			var action_events = InputMap.action_get_events(_current_input_map_action)
-			var prev_action_events = action_events.duplicate()
+			var prev_action_events = action_events.duplicate(true)
 			
 			# Make sure current key or button being mapped is limited to that type
 			for i in action_events.size():
@@ -254,7 +321,7 @@ func _remap_input(event: InputEvent) -> bool:
 					action_events[i] = event
 			
 			# Add new binding if the new key doesn't match an existing bind.
-			if mapped != _current_input_map_action:
+			if _current_input_map_action:
 				InputMap.action_erase_events(_current_input_map_action)
 				for action_event in action_events:
 					InputMap.action_add_event(_current_input_map_action, action_event)

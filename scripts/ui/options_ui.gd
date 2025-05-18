@@ -26,7 +26,7 @@ enum AttachToCursor {X, Y, BOTH}
 
 signal option_highlighted(option: int)
 signal option_selected(option: int)
-signal cancel
+signal cancel(option: int)
 
 var current_option := 0
 
@@ -49,23 +49,35 @@ func handle_input(event: InputEvent) -> void:
 
 
 # Move selection to previous option
-func _goto_prev_option(step: int = 1) -> void:
+func _goto_prev_option(step: int = 1) -> bool:
+	var changed := false
+	
 	if _wrap_around and current_option - step < 0:
 		current_option = _options.size() - 1
+		changed = true
 	elif current_option - step >= 0:
 		current_option -= step
+		changed = true
 	option_highlighted.emit(current_option)
 	_set_cursor_position(current_option)
+	
+	return changed
 
 
 # Move selection to next option
-func _goto_next_option(step: int = 1) -> void:
+func _goto_next_option(step: int = 1) -> bool:
+	var changed := false
+	
 	if _wrap_around and current_option + step >= _options.size():
 		current_option = 0
+		changed = true
 	elif current_option + step < _options.size():
 		current_option += step
+		changed = true
 	option_highlighted.emit(current_option)
 	_set_cursor_position(current_option)
+	
+	return changed
 
 
 # Move cursor to current option

@@ -25,7 +25,7 @@ anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 script = ExtResource("1_mhswj")
-_options = [NodePath("VBoxContainer/DisplayContainer/Display"), NodePath("VBoxContainer/InputMapContainer/Controls"), NodePath("VBoxContainer/VBoxContainer/Save"), NodePath("VBoxContainer/VBoxContainer/Quit")]
+_options = [NodePath("VBoxContainer/DisplayContainer/Display"), NodePath("VBoxContainer/InputMapContainer/Controls"), NodePath("VBoxContainer/VBoxContainer/Restore"), NodePath("VBoxContainer/VBoxContainer/Quit")]
 _cursor = NodePath("Cursor")
 _attach_cursor_to_option = 2
 _attach_offset = Vector2(-40, 5)
@@ -156,6 +156,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DisplayContainer" type="HBoxContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 size_flags_vertical = 0
@@ -176,7 +177,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_constants/margin_right = 70
 
-[node name="Label" type="Label" parent="VBoxContainer/DisplayContainer/HBoxContainer/MarginContainer"]
+[node name="Windowed" type="Label" parent="VBoxContainer/DisplayContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Windowed"
@@ -186,7 +187,7 @@ label_settings = ExtResource("2_x3vyp")
 layout_mode = 2
 theme_override_constants/margin_right = 70
 
-[node name="Label" type="Label" parent="VBoxContainer/DisplayContainer/HBoxContainer/MarginContainer2"]
+[node name="Fullscreen" type="Label" parent="VBoxContainer/DisplayContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Fullscreen"
@@ -199,6 +200,7 @@ script = ExtResource("8_mishw")
 _visible_on_load = true
 _options = [NodePath("../HBoxContainer/MarginContainer"), NodePath("../HBoxContainer/MarginContainer2")]
 _cursor = NodePath("../../../Cursor")
+_wrap_around = false
 _attach_offset = Vector2(-40, 0)
 _vertical_navigation = false
 metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
@@ -447,14 +449,6 @@ custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 size_flags_vertical = 8
 text = "Restore defaults"
-label_settings = ExtResource("2_x3vyp")
-vertical_alignment = 1
-
-[node name="Save" type="Label" parent="VBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
-size_flags_vertical = 8
-text = "Apply"
 label_settings = ExtResource("2_x3vyp")
 vertical_alignment = 1
 

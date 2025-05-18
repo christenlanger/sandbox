@@ -20,7 +20,7 @@ offset_right = 1280.0
 offset_bottom = 720.0
 script = ExtResource("1_q5hnq")
 _visible_on_load = true
-_options = [NodePath("PanelContainer/VBoxContainer/HBoxContainer/Yes"), NodePath("PanelContainer/VBoxContainer/HBoxContainer/No")]
+_options = [NodePath("PanelContainer/VBoxContainer/HBoxContainer/MarginContainer/Yes"), NodePath("PanelContainer/VBoxContainer/HBoxContainer/MarginContainer2/No")]
 _cursor = NodePath("Cursor")
 _attach_offset = Vector2(-40, 0)
 _vertical_navigation = false
@@ -59,10 +59,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -190.0
-offset_top = -54.0
-offset_right = 190.0
-offset_bottom = 54.0
+offset_left = -322.0
+offset_top = -69.0
+offset_right = 322.0
+offset_bottom = 69.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_twh0j")
@@ -72,7 +72,7 @@ layout_mode = 2
 
 [node name="Title" type="Label" parent="PanelContainer/VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 37)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 size_flags_vertical = 1
 text = "Title"
@@ -84,16 +84,26 @@ vertical_alignment = 2
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Yes" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 3
+theme_override_constants/margin_right = 40
+
+[node name="Yes" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
 text = "Yes"
 label_settings = ExtResource("2_n67xm")
 horizontal_alignment = 1
 
-[node name="No" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 60
+
+[node name="No" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
 text = "No"
 label_settings = ExtResource("2_n67xm")
 horizontal_alignment = 1

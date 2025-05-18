@@ -32,7 +32,6 @@ func load_stage(index: int) -> void:
 	
 	# Check if settings menu exists in the stage
 	if _current_stage.has_node("%PauseMenu"):
-		print("Settings menu found")
 		var settings_menu := _current_stage.get_node("%PauseMenu/SettingsMenu")
 		settings_menu.settings_updated.connect(_on_receive_settings_update)
 	
@@ -68,10 +67,5 @@ func _input(event: InputEvent) -> void:
 
 # Process settings
 func _on_receive_settings_update(options: Dictionary) -> void:
-	# Temporary change settings handling
-	if options[Config.ConfigSettings.DISPLAY_RESOLUTION] == Config.DisplayPresets.RESOLUTION_1280_720:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_size(Vector2i(1280, 720))
-	elif options[Config.ConfigSettings.DISPLAY_RESOLUTION] == Config.DisplayPresets.RESOLUTION_FULLSCREEN:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	Config.apply_config_changes(options)
 	

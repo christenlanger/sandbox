@@ -1,7 +1,7 @@
 extends Node
 
 enum ConfigSettings {
-	DISPLAY_RESOLUTION,
+	DISPLAY_MODE,
 	CONTROLS,
 	CONTROLS_KEY,
 	CONTROLS_PAD,
@@ -13,14 +13,6 @@ enum ConfigSettings {
 	CONTROL_DASH,
 }
 
-enum DisplayPresets {
-	RESOLUTION_1280_720,
-	RESOLUTION_1920_1080,
-	RESOLUTION_2560_1440,
-	RESOLUTION_3840_2160,
-	RESOLUTION_FULLSCREEN
-}
-
 # Dictionary containing the game's settings
 var _settings_config = {}
 
@@ -30,17 +22,19 @@ var current_config: Dictionary :
 	set(value):
 		_settings_config = value
 
+
 func _ready() -> void:
-	pass
+	set_default_config()
 
 
 func set_default_config() -> void:
 	InputMap.load_from_project_settings()
 	
 	_settings_config = {
-		ConfigSettings.DISPLAY_RESOLUTION: DisplayPresets.RESOLUTION_1280_720,
+		ConfigSettings.DISPLAY_MODE: DisplayServer.WINDOW_MODE_WINDOWED,
 		ConfigSettings.CONTROLS: {
 			ConfigSettings.CONTROLS_KEY: {
+				ConfigSettings.CONTROL_UP: _get_action_event_by_type(Global.action_list[Global.ActionList.UP], 0),
 				ConfigSettings.CONTROL_DOWN: _get_action_event_by_type(Global.action_list[Global.ActionList.DOWN], 0),
 				ConfigSettings.CONTROL_LEFT: _get_action_event_by_type(Global.action_list[Global.ActionList.LEFT], 0),
 				ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.action_list[Global.ActionList.RIGHT], 0),
@@ -48,6 +42,7 @@ func set_default_config() -> void:
 				ConfigSettings.CONTROL_DASH: _get_action_event_by_type(Global.action_list[Global.ActionList.DASH], 0),
 			},
 			ConfigSettings.CONTROLS_PAD: {
+				ConfigSettings.CONTROL_UP: _get_action_event_by_type(Global.action_list[Global.ActionList.UP], 1),
 				ConfigSettings.CONTROL_DOWN: _get_action_event_by_type(Global.action_list[Global.ActionList.DOWN], 1),
 				ConfigSettings.CONTROL_LEFT: _get_action_event_by_type(Global.action_list[Global.ActionList.LEFT], 1),
 				ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.action_list[Global.ActionList.RIGHT], 1),
@@ -56,6 +51,12 @@ func set_default_config() -> void:
 			}
 		}
 	}
+
+
+func apply_default_config() -> void:
+	set_default_config()
+	DisplayServer.window_set_mode(_settings_config[ConfigSettings.DISPLAY_MODE])
+	apply_inputmap_from_config(_settings_config[ConfigSettings.CONTROLS])
 
 
 # Return the first event from an action by type (0: key; 1: gamepad)
@@ -70,7 +71,12 @@ func _get_action_event_by_type(action: String, type: int) -> InputEvent:
 
 
 # Apply config changes
-func apply_inputmap_changes(controls: Dictionary) -> void:
+func apply_config_changes(config: Dictionary) -> void:
+	_settings_config = config.duplicate(true)
+
+
+# Apply input map from saved config
+func apply_inputmap_from_config(controls: Dictionary) -> void:
 	var action_list = {
 		Global.action_list[Global.ActionList.JUMP]: [
 			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_JUMP],
@@ -97,6 +103,10 @@ func apply_inputmap_changes(controls: Dictionary) -> void:
 			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_RIGHT]
 		],
 	}
+	#var action_list = {
+		#Global.action_list[Global.ActionList.JUMP]: [controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_JUMP], controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_JUMP]],
+		#Global.action_list[Global.ActionList.DASH]: [controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_DASH], controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_DASH]],
+	#}
 	
 	for action in action_list.keys():
 		InputMap.action_erase_events(action)
