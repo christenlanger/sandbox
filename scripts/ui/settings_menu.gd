@@ -1,11 +1,14 @@
 extends OptionsUI
 
 @onready var _state_chart: StateChart = $StateChart
-@onready var display_menu: OptionsUI = %DisplayMenu
+
 @onready var input_map_menu: OptionsUI = %InputMapMenu
 @onready var input_map_box: PanelContainer = %InputMapBox
 @onready var input_map_container: HBoxContainer = %InputMapContainer
 @onready var display_container: HBoxContainer = %DisplayContainer
+@onready var display_menu: OptionsUI = %DisplayMenu
+@onready var resolution_container: HBoxContainer = %ResolutionContainer
+@onready var resolution_menu: OptionsUI = %ResolutionMenu
 
 var _config_settings = {}
 var _config_changed := false
@@ -62,6 +65,7 @@ func open() -> void:
 
 # Close the menu
 func close(option: int = 0) -> void:
+	settings_updated.emit(_config_settings)
 	_confirm_close()
 	
 	##	Previously confirming changes and applying only on exit attempt
@@ -307,7 +311,6 @@ func _update_input_map() -> void:
 func _remap_input(event: InputEvent) -> bool:
 	var is_valid := false
 	if event.is_pressed() and not event.is_echo():
-		print(event)
 		if (event is InputEventKey and not _input_is_gamepad) or (event is InputEventJoypadButton and _input_is_gamepad):
 			var mapped = _mapped_action(event)
 			var action_events = InputMap.action_get_events(_current_input_map_action)

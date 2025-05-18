@@ -526,8 +526,8 @@ delay_in_seconds = "0.0"
 
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded" to="." method="_on_jump_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_can_move_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_crouch_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_dash_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_crouch_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_jump_enabled_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_dashing_state_physics_processing"]
 [connection signal="taken" from="StateChart/Root/CanMove/Grounded/Dashing/On Normal" to="." method="_on_dash_end"]

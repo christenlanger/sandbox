@@ -175,7 +175,7 @@ size_flags_horizontal = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/DisplayContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_right = 70
+theme_override_constants/margin_right = 30
 
 [node name="Windowed" type="Label" parent="VBoxContainer/DisplayContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
@@ -199,6 +199,76 @@ layout_mode = 2
 script = ExtResource("8_mishw")
 _visible_on_load = true
 _options = [NodePath("../HBoxContainer/MarginContainer"), NodePath("../HBoxContainer/MarginContainer2")]
+_cursor = NodePath("../../../Cursor")
+_wrap_around = false
+_attach_offset = Vector2(-40, 0)
+_vertical_navigation = false
+metadata/_custom_type_script = "uid://dwvc34hw8q5qp"
+
+[node name="ResolutionContainer" type="HBoxContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Size" type="Label" parent="VBoxContainer/ResolutionContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Size"
+label_settings = ExtResource("2_x3vyp")
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ResolutionContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ResolutionContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 30
+
+[node name="option_1280x720" type="Label" parent="VBoxContainer/ResolutionContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "1280x720"
+label_settings = ExtResource("2_x3vyp")
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/ResolutionContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 30
+
+[node name="option_1920x1080" type="Label" parent="VBoxContainer/ResolutionContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "1920x1080"
+label_settings = ExtResource("2_x3vyp")
+
+[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer/ResolutionContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 30
+
+[node name="option_2560x1440" type="Label" parent="VBoxContainer/ResolutionContainer/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "2560x1440"
+label_settings = ExtResource("2_x3vyp")
+
+[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer/ResolutionContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 30
+
+[node name="option_3840x2160" type="Label" parent="VBoxContainer/ResolutionContainer/HBoxContainer/MarginContainer4"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "3840x2160"
+label_settings = ExtResource("2_x3vyp")
+
+[node name="ResolutionMenu" type="Control" parent="VBoxContainer/ResolutionContainer" node_paths=PackedStringArray("_options", "_cursor")]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("8_mishw")
+_visible_on_load = true
+_options = [NodePath("../HBoxContainer/MarginContainer"), NodePath("../HBoxContainer/MarginContainer2"), NodePath("../HBoxContainer/MarginContainer3"), NodePath("../HBoxContainer/MarginContainer4")]
 _cursor = NodePath("../../../Cursor")
 _wrap_around = false
 _attach_offset = Vector2(-40, 0)
@@ -467,10 +537,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -528.0
-offset_top = -251.0
-offset_right = -507.0
-offset_bottom = -218.0
+offset_left = -608.0
+offset_top = -273.0
+offset_right = -587.0
+offset_bottom = -240.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "►"
@@ -518,6 +588,8 @@ horizontal_alignment = 1
 [connection signal="state_input" from="StateChart/Root/Open/InputMap/AwaitingInput" to="." method="_on_awaiting_input_state_input"]
 [connection signal="cancel" from="VBoxContainer/DisplayContainer/DisplayMenu" to="." method="_on_display_menu_cancel"]
 [connection signal="option_selected" from="VBoxContainer/DisplayContainer/DisplayMenu" to="." method="_on_display_menu_option_selected"]
+[connection signal="cancel" from="VBoxContainer/ResolutionContainer/ResolutionMenu" to="." method="_on_display_menu_cancel"]
+[connection signal="option_selected" from="VBoxContainer/ResolutionContainer/ResolutionMenu" to="." method="_on_display_menu_option_selected"]
 [connection signal="cancel" from="VBoxContainer/InputMapContainer/InputMapMenu" to="." method="_on_input_map_menu_cancel"]
 [connection signal="option_highlighted" from="VBoxContainer/InputMapContainer/InputMapMenu" to="." method="_on_input_map_menu_option_highlighted"]
 [connection signal="option_selected" from="VBoxContainer/InputMapContainer/InputMapMenu" to="." method="_on_input_map_menu_option_selected"]

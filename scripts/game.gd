@@ -68,4 +68,3 @@ func _input(event: InputEvent) -> void:
 # Process settings
 func _on_receive_settings_update(options: Dictionary) -> void:
 	Config.apply_config_changes(options)
-	
