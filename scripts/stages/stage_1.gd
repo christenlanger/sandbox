@@ -3,11 +3,15 @@ extends Stage
 @onready var _state_chart_debugger: MarginContainer = $StateChartDebugger
 @onready var _state_chart: StateChart = %Player/StateChart
 @onready var _timer: Timer = %Timer
+@onready var player: CharacterBody2D = %Player
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super()
+	
+	# Set initial spawn point
+	_spawn_point = player.position
 	
 	# Delay before enabling player movement. Ideally this comes after a loading screen
 	_timer.wait_time = 0.5

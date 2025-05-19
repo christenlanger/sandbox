@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://bpvbogkvtxrbp"]
+[gd_scene load_steps=20 format=4 uid="uid://bpvbogkvtxrbp"]
 
 [ext_resource type="Script" uid="uid://dkoxpbo7wwihb" path="res://scripts/stages/stage_1.gd" id="1_1tge3"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_relhn"]
@@ -93,6 +93,9 @@ _data = {
 &"RESET": SubResource("Animation_pu7io"),
 &"color_cycle": SubResource("Animation_rxqpy")
 }
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bjuw2"]
+normal = Vector2(-1, 0)
 
 [node name="Stage1" type="Node2D" groups=["stages"]]
 script = ExtResource("1_1tge3")
@@ -264,6 +267,15 @@ libraries = {
 }
 autoplay = "color_cycle"
 
+[node name="Checkpoint" type="Area2D" parent="TriggerZones" groups=["checkpoints"]]
+position = Vector2(327, -30)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerZones/Checkpoint"]
+shape = SubResource("WorldBoundaryShape2D_bjuw2")
+
+[node name="Marker2D" type="Marker2D" parent="TriggerZones/Checkpoint"]
+position = Vector2(18, 16)
+
 [node name="UI" type="CanvasLayer" parent="." groups=["stage_ui"]]
 script = ExtResource("7_bjuw2")
 
@@ -280,6 +292,7 @@ offset_right = 40.0
 grow_vertical = 0
 
 [node name="StateChartDebugger" parent="UI" instance=ExtResource("9_bjuw2")]
+visible = false
 offset_left = -9.0
 offset_top = -25.0
 offset_right = -9.0

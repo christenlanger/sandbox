@@ -303,7 +303,7 @@ func _update_input_map() -> void:
 	for pad_input in input_map_container.find_children("pad_*", "Label"):
 		var action = pad_input.name.right(-4)
 		for input_event in InputMap.action_get_events(action):
-			if input_event is InputEventJoypadButton:
+			if input_event is InputEventJoypadButton or input_event is InputEventJoypadMotion:
 				pad_input.text = _shorten_event_name(input_event.as_text())
 
 
@@ -311,7 +311,8 @@ func _update_input_map() -> void:
 func _remap_input(event: InputEvent) -> bool:
 	var is_valid := false
 	if event.is_pressed() and not event.is_echo():
-		if (event is InputEventKey and not _input_is_gamepad) or (event is InputEventJoypadButton and _input_is_gamepad):
+		print(event)
+		if (event is InputEventKey and not _input_is_gamepad) or ((event is InputEventJoypadButton or event is InputEventJoypadMotion) and _input_is_gamepad):
 			var mapped = _mapped_action(event)
 			var action_events = InputMap.action_get_events(_current_input_map_action)
 			var prev_action_events = action_events.duplicate(true)
@@ -320,7 +321,7 @@ func _remap_input(event: InputEvent) -> bool:
 			for i in action_events.size():
 				if action_events[i] is InputEventKey and event is InputEventKey:
 					action_events[i] = event
-				elif action_events[i] is InputEventJoypadButton and event is InputEventJoypadButton:
+				elif (action_events[i] is InputEventJoypadButton or action_events[i] is InputEventJoypadMotion) and (event is InputEventJoypadButton or event is InputEventJoypadMotion):
 					action_events[i] = event
 			
 			# Add new binding if the new key doesn't match an existing bind.
@@ -337,7 +338,7 @@ func _remap_input(event: InputEvent) -> bool:
 						for i in old_action_events.size():
 							if old_action_events[i] is InputEventKey and prev_event is InputEventKey:
 								old_action_events[i] = prev_event
-							elif old_action_events[i] is InputEventJoypadButton and prev_event is InputEventJoypadButton:
+							elif (old_action_events[i] is InputEventJoypadButton or old_action_events[i] is InputEventJoypadMotion) and (prev_event is InputEventJoypadButton or prev_event is InputEventJoypadMotion):
 								old_action_events[i] = prev_event
 					
 					InputMap.action_erase_events(mapped)
@@ -364,7 +365,7 @@ func _shorten_event_name(event_name: String) -> String:
 	# Match patterns for keyboard
 	if event_name.match("* (Physical)"):
 		short_name = event_name.left(-11)
-	elif event_name.match("Joypad Button*"):
+	elif event_name.match("Joypad*"):
 		short_name = event_name.get_slice(" ", 2)
 	
 	return short_name

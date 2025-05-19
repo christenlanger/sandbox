@@ -21,6 +21,8 @@ const CAMERA_PAN_DOWN_DELAY = 0.5
 @export var _camera: Camera2D
 
 signal debug_text
+signal collide_with_killzone(area: Area2D)
+signal collide_with_checkpoint(area: Area2D)
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -65,10 +67,10 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	# momentum if the direction was changed
 	if direction != _last_direction:
 		_reset_speed_multiplier()
-	_last_direction = direction
+	_last_direction = round(direction)
 	
-	if direction:
-		velocity.x = direction * SPEED * _speed_multiplier
+	if direction >= 0.5 or direction <= -0.5:
+		velocity.x = round(direction) * SPEED * _speed_multiplier
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED * _speed_multiplier)
 	

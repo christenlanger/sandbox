@@ -19,7 +19,7 @@ func _process(delta: float) -> void:
 
 # Call common events everytime a stage loads.
 func _on_stage_loaded() -> void:
-	pass
+	print("Stage loaded")
 
 
 # Load the stage
@@ -52,7 +52,7 @@ func unload_stage() -> void:
 func reset_stage() -> void:
 	if is_instance_valid(_current_stage):
 		_current_stage.queue_free()
-
+	
 	load_stage(_stage_ct)
 
 

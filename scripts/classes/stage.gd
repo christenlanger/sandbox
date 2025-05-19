@@ -7,6 +7,7 @@ signal stage_end
 
 var _can_clear := false
 
+var _spawn_point := Vector2(0.0, 0.0)
 
 func _ready() -> void:
 	for killzone in get_tree().get_nodes_in_group("killzones"):

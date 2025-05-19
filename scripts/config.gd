@@ -54,7 +54,7 @@ func apply_config_settings() -> void:
 # Return the first event from an action by type (0: key; 1: gamepad)
 func _get_action_event_by_type(action: String, type: int) -> InputEvent:
 	for event in InputMap.action_get_events(action):
-		if type and event is InputEventJoypadButton:
+		if type and (event is InputEventJoypadButton or event is InputEventJoypadMotion):
 			return event
 		elif not type and event is InputEventKey:
 			return event

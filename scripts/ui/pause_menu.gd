@@ -28,7 +28,7 @@ func _on_closed_state_input(event: InputEvent) -> void:
 
 
 # Signal handler for exiting pause
-func _resume() -> void:
+func _resume(option: int = 0) -> void:
 	_state_chart.send_event("close")
 	_toggle_pause(false)
 
