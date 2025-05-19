@@ -7,7 +7,7 @@
 [ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="5_tiiek"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="6_dg2hc"]
 [ext_resource type="Script" uid="uid://sda8fuloe460" path="res://scripts/stages/ui.gd" id="7_rkiwu"]
-[ext_resource type="PackedScene" uid="uid://bf3k14kdi4j7c" path="res://scenes/ui/pause_menu.tscn" id="7_vhmg7"]
+[ext_resource type="PackedScene" uid="uid://bf3k14kdi4j7c" path="res://scenes/ui/old_pause_menu.tscn" id="7_vhmg7"]
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="8_rkiwu"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_cg3n2"]

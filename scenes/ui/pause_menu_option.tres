@@ -1,0 +1,10 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c57d47v3yaq16"]
+
+[ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="1_in31d"]
+
+[resource]
+default_font = ExtResource("1_in31d")
+default_font_size = 24
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(0, 0.721569, 0.898039, 1)
+Button/constants/outline_size = 9
