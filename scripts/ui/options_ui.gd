@@ -30,22 +30,57 @@ signal cancel(option: int)
 
 var current_option := 0
 
+# Fix for joypad handling
+var input_rest := false
 
 # Initialize
 func _ready() -> void:
 	self.visible = _visible_on_load
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventJoypadMotion:
+		
+		pass
+
+
 # Call to handle input events
 func handle_input(event: InputEvent) -> void:
-	if _vertical_navigation and event.is_action_pressed("ui_up") or (_horizontal_navigation and event.is_action_pressed("ui_left")):
-		_goto_prev_option()
-	elif _vertical_navigation and event.is_action_pressed("ui_down") or (_horizontal_navigation and event.is_action_pressed("ui_right")):
-		_goto_next_option()
-	elif event.is_action_pressed("ui_accept"):
+	if event.is_action_pressed("ui_accept"):
 		option_selected.emit(current_option)
 	elif event.is_action_pressed("ui_cancel"):
 		cancel.emit()
+	else:
+		if _vertical_navigation:
+			if event.is_action_pressed("ui_up"):
+				if event is InputEventKey or (event is InputEventJoypadMotion and valid_joystick_input(event, "ui_up")):
+					_goto_prev_option()
+			elif event.is_action_pressed("ui_down"):
+				if event is InputEventKey or (event is InputEventJoypadMotion and valid_joystick_input(event, "ui_down")):
+					_goto_next_option()
+		if _horizontal_navigation:
+			if event.is_action_pressed("ui_left"):
+				if event is InputEventKey or (event is InputEventJoypadMotion and valid_joystick_input(event, "ui_left")):
+					_goto_prev_option()
+			elif event.is_action_pressed("ui_right"):
+				if event is InputEventKey or (event is InputEventJoypadMotion and valid_joystick_input(event, "ui_right")):
+					_goto_next_option()
+
+
+# Fix for joypad handling
+func valid_joystick_input(event: InputEventJoypadMotion, action: String) -> bool:
+	if not input_rest and InputMap.action_has_event(action, event):
+		var timer: Timer = Timer.new()
+		timer.timeout.connect(func():
+			input_rest = false
+			timer.queue_free.call_deferred()
+		)
+		add_child(timer)
+		timer.start(0.1)
+		input_rest = true
+		print(event, ", ", action)
+		return true
+	return false
 
 
 # Move selection to previous option
