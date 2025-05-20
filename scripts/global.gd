@@ -22,15 +22,15 @@ enum ActionList {
 }
 
 ## Paths
-var _scene_path_root := "res://scenes/"
-var scene_paths := {
+const _scene_path_root := "res://scenes/"
+const scene_paths := {
 	ScenePaths.ROOT:	_scene_path_root,
 	ScenePaths.STAGES:	_scene_path_root + "stages/",
 	ScenePaths.UI:		_scene_path_root + "ui/",
 }
 
-var _script_path_root = "res://scripts/"
-var script_paths := {
+const _script_path_root = "res://scripts/"
+const script_paths := {
 	ScriptPaths.ROOT:		_script_path_root,
 	ScriptPaths.CLASSES:	_script_path_root + "classes/",
 	ScriptPaths.STAGES:		_script_path_root + "stages/",
@@ -38,7 +38,7 @@ var script_paths := {
 }
 
 ## Stages
-var stages := [
+const stages := [
 	"res://scenes/stages/stage_1.tscn",
 	"res://scenes/stages/stage_2.tscn",
 ]
@@ -58,7 +58,7 @@ func _ready() -> void:
 	}
 
 ## Actions
-var action_list = {
+const action_list = {
 	ActionList.JUMP: "jump",
 	ActionList.DASH: "dash",
 	ActionList.UP: "up",

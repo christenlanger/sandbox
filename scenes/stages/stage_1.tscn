@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://bpvbogkvtxrbp"]
+[gd_scene load_steps=19 format=4 uid="uid://bpvbogkvtxrbp"]
 
 [ext_resource type="Script" uid="uid://dkoxpbo7wwihb" path="res://scripts/stages/stage_1.gd" id="1_1tge3"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_relhn"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bdsiur7r08rsn" path="res://scenes/killzone.tscn" id="6_qm7fq"]
 [ext_resource type="Script" uid="uid://sda8fuloe460" path="res://scripts/stages/ui.gd" id="7_bjuw2"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="7_emlwg"]
+[ext_resource type="PackedScene" uid="uid://bgm15klbunlo3" path="res://scenes/ui/pause_menu.tscn" id="8_relhn"]
 
 [sub_resource type="Animation" id="Animation_pipme"]
 length = 0.001
@@ -284,6 +285,10 @@ anchor_bottom = 1.0
 offset_top = -23.0
 offset_right = 40.0
 grow_vertical = 0
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("8_relhn")]
+unique_name_in_owner = true
+visible = false
 
 [connection signal="debug_text" from="Player" to="." method="_on_player_debug_text"]
 [connection signal="body_entered" from="TriggerZones/ClearZone" to="." method="_on_clear_zone_body_entered"]

@@ -130,6 +130,7 @@ script = ExtResource("7_rkiwu")
 [node name="PauseMenu" parent="UI" instance=ExtResource("7_vhmg7")]
 unique_name_in_owner = true
 visible = false
+_enabled = false
 
 [node name="StateChartDebugger" parent="UI" instance=ExtResource("8_rkiwu")]
 z_index = 99

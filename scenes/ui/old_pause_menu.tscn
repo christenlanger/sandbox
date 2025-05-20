@@ -4,7 +4,7 @@
 [ext_resource type="LabelSettings" uid="uid://bp62ly32vprqu" path="res://assets/ui_label_option.tres" id="2_kukqi"]
 [ext_resource type="LabelSettings" uid="uid://cd7px3pct7pkj" path="res://assets/ui_label_option_selected.tres" id="3_5d2l8"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="5_2rlsb"]
-[ext_resource type="PackedScene" uid="uid://cpy8lyds6schd" path="res://scenes/ui/settings_menu.tscn" id="5_coo1x"]
+[ext_resource type="PackedScene" uid="uid://cpy8lyds6schd" path="res://scenes/ui/old_settings_menu.tscn" id="5_coo1x"]
 [ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="6_coo1x"]
 [ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="7_2jkta"]
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="8_ht4ye"]

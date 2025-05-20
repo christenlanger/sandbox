@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="8_ht4ye"]
 
 [node name="PauseMenu" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -51,6 +52,7 @@ grow_vertical = 2
 [node name="Resume" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 6
+focus_neighbor_top = NodePath("../Quit to Desktop")
 theme = ExtResource("2_0lmf7")
 theme_type_variation = &"FlatButton"
 text = "Resume"
@@ -65,6 +67,7 @@ text = "Settings"
 [node name="Quit to Desktop" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 6
+focus_neighbor_bottom = NodePath("../Resume")
 theme = ExtResource("2_0lmf7")
 theme_type_variation = &"FlatButton"
 text = "Quit to Desktop"
@@ -113,3 +116,9 @@ script = ExtResource("8_ht4ye")
 to = NodePath("../../Active")
 event = &"close_modal"
 delay_in_seconds = "0.0"
+
+[connection signal="pressed" from="VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="VBoxContainer/Quit to Desktop" to="." method="_on_quit_to_desktop_pressed"]
+[connection signal="state_input" from="StateChart/Root/Closed" to="." method="_on_closed_state_input"]
+[connection signal="taken" from="StateChart/Root/Closed/On Open" to="." method="_on_open"]
+[connection signal="state_input" from="StateChart/Root/Open/Active" to="." method="_on_active_state_input"]
