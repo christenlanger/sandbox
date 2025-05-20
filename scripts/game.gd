@@ -4,6 +4,7 @@ extends Node2D
 
 var _current_stage: Node2D
 var _pause_menu: Control
+var _settings_menu: Control
 var _stage_ct := 0
 
 # Game flags
@@ -34,15 +35,15 @@ func _on_stage_loaded() -> void:
 # Load the stage
 func load_stage(index: int) -> void:
 	# Instantiate the stage and connect to signals
-	_current_stage = load(Global.stages[index]).instantiate()
+	_current_stage = load(Global.STAGES[index]).instantiate()
 	_current_stage.ready.connect(_on_stage_loaded)
 	_current_stage.stage_end.connect(unload_stage)
 	_current_stage.stage_reset.connect(reset_stage)
 	
-	# Check if settings menu exists in the stage
-	#if _current_stage.has_node("%PauseMenu"):
-		#var settings_menu := _current_stage.get_node("%PauseMenu/SettingsMenu")
-		#settings_menu.settings_updated.connect(_on_receive_settings_update)
+	# Connect to pause menu signals
+	if _current_stage.has_node("%PauseMenu"):
+		_pause_menu = _current_stage.get_node("%PauseMenu")
+		_pause_menu.open_settings.connect(open_settings)
 	
 	# Add the loaded stage to the game
 	_stage_container.add_child(_current_stage)
@@ -76,5 +77,20 @@ func _input(event: InputEvent) -> void:
 
 
 # Process settings
-func _on_receive_settings_update(options: Dictionary) -> void:
-	Config.apply_config_changes(options)
+func _on_receive_settings(options: Dictionary) -> void:
+	Config.accept_config_changes(options)
+
+
+# Open settings menu
+func open_settings() -> void:
+	_settings_menu = load(Global.SETTINGS_SCENE).instantiate()
+
+	if is_instance_valid(_settings_menu):
+		_settings_menu.send_settings.connect(_on_receive_settings)
+		_settings_menu.closed.connect(func():
+			_settings_menu.queue_free.call_deferred()
+		)
+		# If the pause menu is active, connect settings close signal to it as well
+		if is_instance_valid(_pause_menu):
+			_settings_menu.closed.connect(_pause_menu.close_settings)
+		_current_stage.get_node("UI").add_child(_settings_menu)

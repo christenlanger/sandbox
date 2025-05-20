@@ -17,12 +17,12 @@ var _confirm_menu: OptionsUI
 # Input actions to display. Note that this is dependent on the display order
 # Check for a better implementation in the future
 var _input_actions := {
-	Global.action_list[Global.ActionList.UP]: "Up",
-	Global.action_list[Global.ActionList.LEFT]: "Move Left",
-	Global.action_list[Global.ActionList.RIGHT]: "Move Right",
-	Global.action_list[Global.ActionList.DOWN]: "Crouch",
-	Global.action_list[Global.ActionList.JUMP]: "Jump",
-	Global.action_list[Global.ActionList.DASH]: "Dash"
+	Global.ACTION_LIST[Global.ActionList.UP]: "Up",
+	Global.ACTION_LIST[Global.ActionList.LEFT]: "Move Left",
+	Global.ACTION_LIST[Global.ActionList.RIGHT]: "Move Right",
+	Global.ACTION_LIST[Global.ActionList.DOWN]: "Crouch",
+	Global.ACTION_LIST[Global.ActionList.JUMP]: "Jump",
+	Global.ACTION_LIST[Global.ActionList.DASH]: "Dash"
 }
 
 var _input_is_gamepad := 0
@@ -74,7 +74,7 @@ func close(option: int = 0) -> void:
 	# 
 	# # If settings were changed, ask to confirm
 	# if _config_changed:
-	# 	_confirm_menu = load(Global.scene_paths[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
+	# 	_confirm_menu = load(Global.SCENE_PATHS[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
 	# 	_confirm_menu.title = "Apply changes?"
 	# 	_confirm_menu.cancel.connect(_cancel_close)
 	# 	_confirm_menu.confirm.connect(_close_with_config)
@@ -148,7 +148,7 @@ func _on_option_selected(option: int) -> void:
 		
 		# Restore everything to default
 		2:
-			_confirm_menu = load(Global.scene_paths[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
+			_confirm_menu = load(Global.SCENE_PATHS[Global.ScenePaths.UI] + "yes_no_box.tscn").instantiate()
 			_confirm_menu.title = "Reset settings to default?"
 			_confirm_menu.cancel.connect(_on_default_settings_cancel)
 			_confirm_menu.confirm.connect(_on_default_settings_apply)

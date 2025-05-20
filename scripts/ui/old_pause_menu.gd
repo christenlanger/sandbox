@@ -14,14 +14,14 @@ func _ready() -> void:
 
 func _on_active_state_input(event: InputEvent) -> void:
 	# Handle pause action only for pause menu
-	if event.is_action_pressed(Global.action_list[Global.ActionList.PAUSE]):
+	if event.is_action_pressed(Global.ACTION_LIST[Global.ActionList.PAUSE]):
 		cancel.emit()
 	else:
 		handle_input(event)
 
 
 func _on_closed_state_input(event: InputEvent) -> void:
-	if _enabled and event.is_action_pressed(Global.action_list[Global.ActionList.PAUSE]):
+	if _enabled and event.is_action_pressed(Global.ACTION_LIST[Global.ActionList.PAUSE]):
 		_state_chart.send_event("open")
 		set_current(0)
 		_toggle_pause(true)

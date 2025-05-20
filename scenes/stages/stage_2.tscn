@@ -7,8 +7,8 @@
 [ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="5_tiiek"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="6_dg2hc"]
 [ext_resource type="Script" uid="uid://sda8fuloe460" path="res://scripts/stages/ui.gd" id="7_rkiwu"]
-[ext_resource type="PackedScene" uid="uid://bf3k14kdi4j7c" path="res://scenes/ui/old_pause_menu.tscn" id="7_vhmg7"]
 [ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="8_rkiwu"]
+[ext_resource type="PackedScene" uid="uid://bgm15klbunlo3" path="res://scenes/ui/pause_menu.tscn" id="9_rkiwu"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_cg3n2"]
 
@@ -127,11 +127,6 @@ autoplay = "roll"
 [node name="UI" type="CanvasLayer" parent="." groups=["stage_ui"]]
 script = ExtResource("7_rkiwu")
 
-[node name="PauseMenu" parent="UI" instance=ExtResource("7_vhmg7")]
-unique_name_in_owner = true
-visible = false
-_enabled = false
-
 [node name="StateChartDebugger" parent="UI" instance=ExtResource("8_rkiwu")]
 z_index = 99
 offset_left = 796.0
@@ -148,3 +143,7 @@ anchor_bottom = 1.0
 offset_top = -23.0
 offset_right = 40.0
 grow_vertical = 0
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("9_rkiwu")]
+unique_name_in_owner = true
+visible = false

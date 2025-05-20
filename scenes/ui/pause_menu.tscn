@@ -118,6 +118,7 @@ event = &"close_modal"
 delay_in_seconds = "0.0"
 
 [connection signal="pressed" from="VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="VBoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit to Desktop" to="." method="_on_quit_to_desktop_pressed"]
 [connection signal="state_input" from="StateChart/Root/Closed" to="." method="_on_closed_state_input"]
 [connection signal="taken" from="StateChart/Root/Closed/On Open" to="." method="_on_open"]

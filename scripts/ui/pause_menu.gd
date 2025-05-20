@@ -9,6 +9,7 @@ extends Control
 
 
 signal closed
+signal open_settings
 
 var is_paused := false
 
@@ -26,15 +27,16 @@ func _on_active_state_input(event: InputEvent) -> void:
 
 
 # Toggle pause
-func set_paused(is_paused: bool) -> void:
-	is_paused = is_paused
-	visible = is_paused
-	get_tree().paused = is_paused
+func set_paused(paused: bool) -> void:
+	is_paused = paused
+	visible = paused
+	get_tree().paused = paused
 	
-	if is_paused:
+	if paused:
 		state_chart.send_event("open")
 	else:
 		state_chart.send_event("close")
+		closed.emit()
 
 
 # Pause menu has just been opened
@@ -50,3 +52,15 @@ func _on_resume_pressed() -> void:
 # Quit game
 func _on_quit_to_desktop_pressed() -> void:
 	get_tree().quit()
+
+
+# Open settings. Turn on modal state to prevent further inputs
+func _on_settings_pressed() -> void:
+	state_chart.send_event("open_modal")
+	open_settings.emit()
+
+
+# Close settings. Connect this to a signal to release modal state
+func close_settings() -> void:
+	state_chart.send_event("close_modal")
+	btn_settings.grab_focus()

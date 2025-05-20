@@ -16,7 +16,10 @@ enum ConfigSettings {
 }
 
 # Dictionary containing the game's settings
-var _settings_config = {}
+var _settings_config: Dictionary = {}
+
+# Dictionary for containing the game's default controls
+var default_controls: Dictionary = {}
 
 var current_config: Dictionary :
 	get:
@@ -26,13 +29,14 @@ var current_config: Dictionary :
 
 
 func _ready() -> void:
-	set_default_config()
+	get_default_config()
 	read_inputmap_to_config()
 	load_config()
 	apply_config_settings()
 
 
-func set_default_config() -> void:
+# Get default settings value to config
+func get_default_config() -> void:
 	InputMap.load_from_project_settings()
 	
 	_settings_config = {
@@ -40,12 +44,14 @@ func set_default_config() -> void:
 	}
 
 
+# Apply the default settings
 func apply_default_config() -> void:
-	set_default_config()
+	get_default_config()
 	read_inputmap_to_config()
 	apply_config_settings()
 
 
+# Apply the currently stored config settings
 func apply_config_settings() -> void:
 	DisplayServer.window_set_mode(_settings_config[ConfigSettings.DISPLAY_MODE])
 	apply_inputmap_from_config(_settings_config[ConfigSettings.CONTROLS])
@@ -62,10 +68,12 @@ func _get_action_event_by_type(action: String, type: int) -> InputEvent:
 	return null
 
 
-# Apply config changes
-func apply_config_changes(config: Dictionary) -> void:
+# Get incoming changes, apply, and then save them to storage
+# TODO: Validate formatting of the variable to make sure it's can be
+# 		read by our functions
+func accept_config_changes(config: Dictionary) -> void:
 	_settings_config = config.duplicate(true)
-	read_inputmap_to_config()
+	apply_config_settings()
 	save_config()
 
 
@@ -73,20 +81,20 @@ func apply_config_changes(config: Dictionary) -> void:
 func read_inputmap_to_config() -> void:
 	var controls = {
 		ConfigSettings.CONTROLS_KEY: {
-			ConfigSettings.CONTROL_UP: _get_action_event_by_type(Global.action_list[Global.ActionList.UP], 0),
-			ConfigSettings.CONTROL_DOWN: _get_action_event_by_type(Global.action_list[Global.ActionList.DOWN], 0),
-			ConfigSettings.CONTROL_LEFT: _get_action_event_by_type(Global.action_list[Global.ActionList.LEFT], 0),
-			ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.action_list[Global.ActionList.RIGHT], 0),
-			ConfigSettings.CONTROL_JUMP: _get_action_event_by_type(Global.action_list[Global.ActionList.JUMP], 0),
-			ConfigSettings.CONTROL_DASH: _get_action_event_by_type(Global.action_list[Global.ActionList.DASH], 0),
+			ConfigSettings.CONTROL_UP: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.UP], 0),
+			ConfigSettings.CONTROL_DOWN: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.DOWN], 0),
+			ConfigSettings.CONTROL_LEFT: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.LEFT], 0),
+			ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.RIGHT], 0),
+			ConfigSettings.CONTROL_JUMP: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.JUMP], 0),
+			ConfigSettings.CONTROL_DASH: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.DASH], 0),
 		},
 		ConfigSettings.CONTROLS_PAD: {
-			ConfigSettings.CONTROL_UP: _get_action_event_by_type(Global.action_list[Global.ActionList.UP], 1),
-			ConfigSettings.CONTROL_DOWN: _get_action_event_by_type(Global.action_list[Global.ActionList.DOWN], 1),
-			ConfigSettings.CONTROL_LEFT: _get_action_event_by_type(Global.action_list[Global.ActionList.LEFT], 1),
-			ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.action_list[Global.ActionList.RIGHT], 1),
-			ConfigSettings.CONTROL_JUMP: _get_action_event_by_type(Global.action_list[Global.ActionList.JUMP], 1),
-			ConfigSettings.CONTROL_DASH: _get_action_event_by_type(Global.action_list[Global.ActionList.DASH], 1),
+			ConfigSettings.CONTROL_UP: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.UP], 1),
+			ConfigSettings.CONTROL_DOWN: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.DOWN], 1),
+			ConfigSettings.CONTROL_LEFT: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.LEFT], 1),
+			ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.RIGHT], 1),
+			ConfigSettings.CONTROL_JUMP: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.JUMP], 1),
+			ConfigSettings.CONTROL_DASH: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.DASH], 1),
 		}
 	}
 	
@@ -96,27 +104,27 @@ func read_inputmap_to_config() -> void:
 # Apply input map from saved config
 func apply_inputmap_from_config(controls: Dictionary) -> void:
 	var action_list = {
-		Global.action_list[Global.ActionList.JUMP]: [
+		Global.ACTION_LIST[Global.ActionList.JUMP]: [
 			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_JUMP],
 			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_JUMP]
 		],
-		Global.action_list[Global.ActionList.DASH]: [
+		Global.ACTION_LIST[Global.ActionList.DASH]: [
 			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_DASH],
 			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_DASH]
 		],
-		Global.action_list[Global.ActionList.UP]: [
+		Global.ACTION_LIST[Global.ActionList.UP]: [
 			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_UP],
 			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_UP]
 		],
-		Global.action_list[Global.ActionList.DOWN]: [
+		Global.ACTION_LIST[Global.ActionList.DOWN]: [
 			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_DOWN],
 			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_DOWN]
 		],
-		Global.action_list[Global.ActionList.LEFT]: [
+		Global.ACTION_LIST[Global.ActionList.LEFT]: [
 			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_LEFT],
 			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_LEFT]
 		],
-		Global.action_list[Global.ActionList.RIGHT]: [
+		Global.ACTION_LIST[Global.ActionList.RIGHT]: [
 			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_RIGHT],
 			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_RIGHT]
 		],

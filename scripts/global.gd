@@ -22,25 +22,28 @@ enum ActionList {
 }
 
 ## Paths
-const _scene_path_root := "res://scenes/"
-const scene_paths := {
-	ScenePaths.ROOT:	_scene_path_root,
-	ScenePaths.STAGES:	_scene_path_root + "stages/",
-	ScenePaths.UI:		_scene_path_root + "ui/",
+const _SCENE_PATH_ROOT := "res://scenes/"
+const SCENE_PATHS := {
+	ScenePaths.ROOT:	_SCENE_PATH_ROOT,
+	ScenePaths.STAGES:	_SCENE_PATH_ROOT + "stages/",
+	ScenePaths.UI:		_SCENE_PATH_ROOT + "ui/",
 }
 
-const _script_path_root = "res://scripts/"
-const script_paths := {
-	ScriptPaths.ROOT:		_script_path_root,
-	ScriptPaths.CLASSES:	_script_path_root + "classes/",
-	ScriptPaths.STAGES:		_script_path_root + "stages/",
-	ScriptPaths.UI:			_script_path_root + "ui/",
+const _SCRIPT_PATH_ROOT = "res://scripts/"
+const SCRIPT_PATHS := {
+	ScriptPaths.ROOT:		_SCRIPT_PATH_ROOT,
+	ScriptPaths.CLASSES:	_SCRIPT_PATH_ROOT + "classes/",
+	ScriptPaths.STAGES:		_SCRIPT_PATH_ROOT + "stages/",
+	ScriptPaths.UI:			_SCRIPT_PATH_ROOT + "ui/",
 }
+
+# Important scenes
+const SETTINGS_SCENE = SCENE_PATHS[ScenePaths.UI] + "settings_menu.tscn"
 
 ## Stages
-const stages := [
-	"res://scenes/stages/stage_1.tscn",
-	"res://scenes/stages/stage_2.tscn",
+const STAGES := [
+	SCENE_PATHS[ScenePaths.STAGES] + "stage_1.tscn",
+	SCENE_PATHS[ScenePaths.STAGES] + "stage_2.tscn",
 ]
 
 ## Resource styles
@@ -58,7 +61,7 @@ func _ready() -> void:
 	}
 
 ## Actions
-const action_list = {
+const ACTION_LIST = {
 	ActionList.JUMP: "jump",
 	ActionList.DASH: "dash",
 	ActionList.UP: "up",

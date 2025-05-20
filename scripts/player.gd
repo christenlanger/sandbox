@@ -61,7 +61,7 @@ func _process(delta: float) -> void:
 
 func _on_can_move_state_physics_processing(delta: float) -> void:
 	# Get the input direction and handle the movement/deceleration.
-	var direction := Input.get_axis(Global.action_list[Global.ActionList.LEFT], Global.action_list[Global.ActionList.RIGHT])
+	var direction := Input.get_axis(Global.ACTION_LIST[Global.ActionList.LEFT], Global.ACTION_LIST[Global.ActionList.RIGHT])
 	
 	# Reset speed if there was a change in direction. This prevents keeping dashing
 	# momentum if the direction was changed
@@ -108,14 +108,14 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 
 # Enable crouch while grounded
 func _on_crouch_enabled_state_physics_processing(delta: float) -> void:
-	if Input.is_action_pressed(Global.action_list[Global.ActionList.DOWN]):
+	if Input.is_action_pressed(Global.ACTION_LIST[Global.ActionList.DOWN]):
 		_state_chart.send_event("crouch")
 		_animation_state_machine.travel("crouch")
 		_crouched_pressed = min(_crouched_pressed + delta, CAMERA_PAN_DOWN_DELAY)
 		if _crouched_pressed >= CAMERA_PAN_DOWN_DELAY:
 			if _camera.drag_vertical_offset < 0.5:
 				_camera.drag_vertical_offset = 0.5
-	elif Input.is_action_just_released(Global.action_list[Global.ActionList.DOWN]):
+	elif Input.is_action_just_released(Global.ACTION_LIST[Global.ActionList.DOWN]):
 		_crouched_pressed = 0
 		_state_chart.send_event("stand")
 		_animation_state_machine.travel("idle")
@@ -124,7 +124,7 @@ func _on_crouch_enabled_state_physics_processing(delta: float) -> void:
 
 # Process jump button including crouching state on one way platforms
 func _on_jump_enabled_state_physics_processing(delta: float) -> void:
-	if Input.is_action_just_pressed(Global.action_list[Global.ActionList.JUMP]):
+	if Input.is_action_just_pressed(Global.ACTION_LIST[Global.ActionList.JUMP]):
 		if _crouched_pressed and is_on_one_way_floor():
 			var timer: SceneTreeTimer = get_tree().create_timer(0.1)
 			
@@ -142,7 +142,7 @@ func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 
 # Enable dash. Typically only on grounded non-dashing state
 func _on_dash_enabled_state_physics_processing(delta: float) -> void:
-	if Input.is_action_just_pressed(Global.action_list[Global.ActionList.DASH]) and _last_direction != 0:
+	if Input.is_action_just_pressed(Global.ACTION_LIST[Global.ActionList.DASH]) and _last_direction != 0:
 		_speed_multiplier = DASH_SPEED
 		_is_dashing = true
 		_state_chart.send_event("dash")
@@ -186,7 +186,7 @@ func _reset_speed_multiplier() -> void:
 # Process jump hold frames
 func _on_rising_state_physics_processing(delta: float) -> void:
 	# Cut off jump if button is released
-	if Input.is_action_just_released(Global.action_list[Global.ActionList.JUMP]):
+	if Input.is_action_just_released(Global.ACTION_LIST[Global.ActionList.JUMP]):
 		if velocity.y < 0:
 			velocity.y *= 0.5
 

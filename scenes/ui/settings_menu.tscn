@@ -1,16 +1,22 @@
-[gd_scene load_steps=7 format=3 uid="uid://bqoa6d78b26af"]
+[gd_scene load_steps=12 format=3 uid="uid://bqoa6d78b26af"]
 
 [ext_resource type="Script" uid="uid://dc2otsmmtbk55" path="res://scripts/ui/settings_menu.gd" id="1_mhswj"]
 [ext_resource type="LabelSettings" uid="uid://bp62ly32vprqu" path="res://assets/ui_label_option.tres" id="2_x3vyp"]
 [ext_resource type="Theme" uid="uid://c8om2mu6elg48" path="res://scenes/ui/settings_menu_option.tres" id="4_0b1cv"]
+[ext_resource type="StyleBox" uid="uid://bpxj4qp5jmc4c" path="res://scenes/ui/theme_toggle_button_pressed.tres" id="5_7dpwb"]
 [ext_resource type="ButtonGroup" uid="uid://d1yn4at7g18xg" path="res://scenes/ui/settings_menu_button_group_display.tres" id="5_ywggk"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="6_h271e"]
 [ext_resource type="Shader" uid="uid://by3p0vc1y22e3" path="res://assets/pause_menu.gdshader" id="6_ngbvi"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="7_7dpwb"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="8_iii5b"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="9_r6v77"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhswj"]
 shader = ExtResource("6_ngbvi")
 shader_parameter/amount = 2.0
 
 [node name="SettingsMenu" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,12 +50,13 @@ anchor_bottom = 0.5
 offset_left = -553.0
 offset_top = -289.0
 offset_right = 553.0
-offset_bottom = 334.0
+offset_bottom = 298.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_0b1cv")
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
@@ -108,6 +115,9 @@ focus_mode = 2
 [node name="Windowed" type="Button" parent="VBoxContainer/TabContainer/Display/VBoxContainer/MarginContainer/VBoxContainer/DisplayMode/DisplayScroll/DisplayModeContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.54902)
+theme_override_styles/hover_pressed = ExtResource("5_7dpwb")
+theme_override_styles/pressed = ExtResource("5_7dpwb")
 toggle_mode = true
 button_group = ExtResource("5_ywggk")
 text = "Windowed"
@@ -116,6 +126,9 @@ metadata/display_mode = "windowed"
 [node name="Fullscreen" type="Button" parent="VBoxContainer/TabContainer/Display/VBoxContainer/MarginContainer/VBoxContainer/DisplayMode/DisplayScroll/DisplayModeContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.54902)
+theme_override_styles/hover_pressed = ExtResource("5_7dpwb")
+theme_override_styles/pressed = ExtResource("5_7dpwb")
 toggle_mode = true
 button_group = ExtResource("5_ywggk")
 text = "Fullscreen"
@@ -346,23 +359,54 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "Up"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 8
 
-[node name="Apply" type="Button" parent="VBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 36)
+[node name="Apply" type="Button" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(268, 36)
 layout_mode = 2
+size_flags_horizontal = 10
 text = "Apply Changes"
 
-[node name="Default" type="Button" parent="VBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 36)
+[node name="Default" type="Button" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(268, 36)
 layout_mode = 2
+size_flags_horizontal = 8
 text = "Restore to Defaults"
 
-[node name="Exit" type="Button" parent="VBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 36)
+[node name="Exit" type="Button" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(268, 36)
 layout_mode = 2
+size_flags_horizontal = 8
 text = "Go Back"
 
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("6_h271e")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("7_7dpwb")
+initial_state = NodePath("Enabled")
+
+[node name="Enabled" type="Node" parent="StateChart/Root"]
+script = ExtResource("8_iii5b")
+
+[node name="On HasModal" type="Node" parent="StateChart/Root/Enabled"]
+script = ExtResource("9_r6v77")
+to = NodePath("../../HasModal")
+event = &"open_modal"
+delay_in_seconds = "0.0"
+
+[node name="HasModal" type="Node" parent="StateChart/Root"]
+script = ExtResource("8_iii5b")
+
+[node name="On Enabled" type="Node" parent="StateChart/Root/HasModal"]
+script = ExtResource("9_r6v77")
+to = NodePath("../../Enabled")
+event = &"close_modal"
+delay_in_seconds = "0.0"
+
+[connection signal="tab_changed" from="VBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
 [connection signal="focus_entered" from="VBoxContainer/TabContainer/Display/VBoxContainer/MarginContainer/VBoxContainer/DisplayMode/DisplayScroll/DisplayModeContainer" to="." method="_on_display_mode_container_focus_entered"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Exit" to="." method="_attempt_to_close"]
+[connection signal="state_input" from="StateChart/Root/Enabled" to="." method="_on_enabled_state_input"]
