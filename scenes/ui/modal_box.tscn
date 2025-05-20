@@ -1,0 +1,194 @@
+[gd_scene load_steps=17 format=3 uid="uid://b8yj01s71hs2a"]
+
+[ext_resource type="Script" uid="uid://rui72b8llm63" path="res://scripts/ui/modal_box.gd" id="1_brr3b"]
+[ext_resource type="StyleBox" uid="uid://by0joetrvw21w" path="res://scenes/ui/theme_toggle_button_focus.tres" id="1_harwm"]
+[ext_resource type="StyleBox" uid="uid://co5hi2p36tf7p" path="res://scenes/ui/theme_toggle_button_normal.tres" id="2_brr3b"]
+[ext_resource type="StyleBox" uid="uid://c5q7n2b7gf5qw" path="res://scenes/ui/modal_box.tres" id="2_nvmoj"]
+[ext_resource type="StyleBox" uid="uid://cqxvmyb7ndfy0" path="res://scenes/ui/panel_rounded_flat.tres" id="3_nvmoj"]
+[ext_resource type="StyleBox" uid="uid://63rtr4rvt828" path="res://scenes/ui/tab_selected.tres" id="4_ccxxi"]
+[ext_resource type="StyleBox" uid="uid://4cuc5nvk5tvd" path="res://scenes/ui/tab_unselected.tres" id="5_1rl3o"]
+[ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="6_w20v5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ccxxi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_in31d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ih5n"]
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.202723, 0.202723, 0.202723, 0.945098)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p30qv"]
+
+[sub_resource type="Theme" id="Theme_gwcab"]
+default_font = ExtResource("6_w20v5")
+default_font_size = 16
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/constants/outline_size = 9
+Button/styles/disabled = SubResource("StyleBoxEmpty_in31d")
+Button/styles/focus = ExtResource("1_harwm")
+Button/styles/hover = ExtResource("1_harwm")
+Button/styles/hover_pressed = ExtResource("1_harwm")
+Button/styles/normal = ExtResource("2_brr3b")
+Button/styles/pressed = ExtResource("2_brr3b")
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 8
+Label/styles/normal = SubResource("StyleBoxFlat_6ih5n")
+PanelContainer/styles/panel = SubResource("StyleBoxEmpty_p30qv")
+TabContainer/colors/font_selected_color = Color(0.95, 0.95, 0.95, 1)
+TabContainer/colors/font_unselected_color = Color(1, 1, 1, 1)
+TabContainer/constants/outline_size = 3
+TabContainer/constants/side_margin = 40
+TabContainer/styles/panel = ExtResource("3_nvmoj")
+TabContainer/styles/tab_focus = ExtResource("4_ccxxi")
+TabContainer/styles/tab_hovered = ExtResource("4_ccxxi")
+TabContainer/styles/tab_selected = ExtResource("4_ccxxi")
+TabContainer/styles/tab_unselected = ExtResource("5_1rl3o")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7wdk"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+
+[sub_resource type="Theme" id="Theme_aufiy"]
+default_font = ExtResource("6_w20v5")
+default_font_size = 16
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/constants/outline_size = 9
+Button/styles/disabled = SubResource("StyleBoxEmpty_in31d")
+Button/styles/focus = ExtResource("1_harwm")
+Button/styles/hover = ExtResource("1_harwm")
+Button/styles/hover_pressed = ExtResource("1_harwm")
+Button/styles/normal = ExtResource("2_brr3b")
+Button/styles/pressed = ExtResource("2_brr3b")
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 8
+Label/styles/normal = SubResource("StyleBoxEmpty_s7wdk")
+PanelContainer/styles/panel = SubResource("StyleBoxEmpty_p30qv")
+TabContainer/colors/font_selected_color = Color(0.95, 0.95, 0.95, 1)
+TabContainer/colors/font_unselected_color = Color(1, 1, 1, 1)
+TabContainer/constants/outline_size = 3
+TabContainer/constants/side_margin = 40
+TabContainer/styles/panel = ExtResource("3_nvmoj")
+TabContainer/styles/tab_focus = ExtResource("4_ccxxi")
+TabContainer/styles/tab_hovered = ExtResource("4_ccxxi")
+TabContainer/styles/tab_selected = ExtResource("4_ccxxi")
+TabContainer/styles/tab_unselected = ExtResource("5_1rl3o")
+
+[sub_resource type="Theme" id="Theme_qvwyh"]
+default_font = ExtResource("6_w20v5")
+default_font_size = 16
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/constants/outline_size = 9
+Button/styles/disabled = SubResource("StyleBoxEmpty_in31d")
+Button/styles/focus = ExtResource("1_harwm")
+Button/styles/hover = ExtResource("1_harwm")
+Button/styles/hover_pressed = ExtResource("1_harwm")
+Button/styles/normal = ExtResource("2_brr3b")
+Button/styles/pressed = ExtResource("2_brr3b")
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 8
+PanelContainer/styles/panel = SubResource("StyleBoxEmpty_p30qv")
+TabContainer/colors/font_selected_color = Color(0.95, 0.95, 0.95, 1)
+TabContainer/colors/font_unselected_color = Color(1, 1, 1, 1)
+TabContainer/constants/outline_size = 3
+TabContainer/constants/side_margin = 40
+TabContainer/styles/panel = ExtResource("3_nvmoj")
+TabContainer/styles/tab_focus = ExtResource("4_ccxxi")
+TabContainer/styles/tab_hovered = ExtResource("4_ccxxi")
+TabContainer/styles/tab_selected = ExtResource("4_ccxxi")
+TabContainer/styles/tab_unselected = ExtResource("5_1rl3o")
+
+[node name="ModalBox" type="PanelContainer"]
+unique_name_in_owner = true
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ccxxi")
+script = ExtResource("1_brr3b")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(500, 220)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("2_nvmoj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="TitleText" type="Label" parent="PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = SubResource("Theme_gwcab")
+text = "Title of this box"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="MessageText" type="Label" parent="PanelContainer/VBoxContainer/MarginContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_vertical = 6
+theme = SubResource("Theme_aufiy")
+theme_override_constants/line_spacing = 10
+text = "Dialog box message that is usually going to be replaced"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ButtonContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_vertical = 8
+theme = SubResource("Theme_qvwyh")
+
+[node name="ButtonOK" type="Button" parent="PanelContainer/VBoxContainer/MarginContainer/ButtonContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+text = "OK"
+
+[node name="ButtonCancel" type="Button" parent="PanelContainer/VBoxContainer/MarginContainer/ButtonContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Cancel"

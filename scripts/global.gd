@@ -39,6 +39,7 @@ const SCRIPT_PATHS := {
 
 # Important scenes
 const SETTINGS_SCENE = SCENE_PATHS[ScenePaths.UI] + "settings_menu.tscn"
+const MODAL_SCENE = SCENE_PATHS[ScenePaths.UI] + "modal_box.tscn"
 
 ## Stages
 const STAGES := [
@@ -70,4 +71,15 @@ const ACTION_LIST = {
 	ActionList.RIGHT: "move_right",
 	ActionList.RESTART: "restart",
 	ActionList.PAUSE: "pause",
+}
+
+const ACTION_NAMES = {
+	ACTION_LIST[ActionList.JUMP]: "Jump",
+	ACTION_LIST[ActionList.DASH]: "Dash",
+	ACTION_LIST[ActionList.UP]: "Up",
+	ACTION_LIST[ActionList.DOWN]: "Crouch",
+	ACTION_LIST[ActionList.LEFT]: "Move Left",
+	ACTION_LIST[ActionList.RIGHT]: "Move Right",
+	ACTION_LIST[ActionList.RESTART]: "Restart",
+	ACTION_LIST[ActionList.PAUSE]: "Pause",
 }
