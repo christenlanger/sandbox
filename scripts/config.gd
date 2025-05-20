@@ -13,13 +13,16 @@ enum ConfigSettings {
 	CONTROL_RIGHT,
 	CONTROL_JUMP,
 	CONTROL_DASH,
+	CONTROL_RESTART,
 }
 
 # Dictionary containing the game's settings
 var _settings_config: Dictionary = {}
 
 # Dictionary for containing the game's default controls
+var default_settings: Dictionary = {}
 var default_controls: Dictionary = {}
+
 
 var current_config: Dictionary :
 	get:
@@ -31,6 +34,11 @@ var current_config: Dictionary :
 func _ready() -> void:
 	get_default_config()
 	read_inputmap_to_config()
+
+	# Store default control scheme in this variable
+	default_settings = _settings_config.duplicate(true)
+	default_controls = default_settings[ConfigSettings.CONTROLS]
+
 	load_config()
 	apply_config_settings()
 
@@ -87,6 +95,7 @@ func read_inputmap_to_config() -> void:
 			ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.RIGHT], 0),
 			ConfigSettings.CONTROL_JUMP: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.JUMP], 0),
 			ConfigSettings.CONTROL_DASH: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.DASH], 0),
+			ConfigSettings.CONTROL_RESTART: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.RESTART], 0),
 		},
 		ConfigSettings.CONTROLS_PAD: {
 			ConfigSettings.CONTROL_UP: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.UP], 1),
@@ -95,38 +104,45 @@ func read_inputmap_to_config() -> void:
 			ConfigSettings.CONTROL_RIGHT: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.RIGHT], 1),
 			ConfigSettings.CONTROL_JUMP: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.JUMP], 1),
 			ConfigSettings.CONTROL_DASH: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.DASH], 1),
+			ConfigSettings.CONTROL_RESTART: _get_action_event_by_type(Global.ACTION_LIST[Global.ActionList.RESTART], 1),
 		}
 	}
 	
-	_settings_config[ConfigSettings.CONTROLS] = controls.duplicate(true)
+	_settings_config[ConfigSettings.CONTROLS] = controls
 	
 
 # Apply input map from saved config
 func apply_inputmap_from_config(controls: Dictionary) -> void:
+	var key_controls = controls[ConfigSettings.CONTROLS_KEY]
+	var pad_controls = controls[ConfigSettings.CONTROLS_PAD]
 	var action_list = {
 		Global.ACTION_LIST[Global.ActionList.JUMP]: [
-			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_JUMP],
-			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_JUMP]
+			key_controls[ConfigSettings.CONTROL_JUMP],
+			pad_controls[ConfigSettings.CONTROL_JUMP]
 		],
 		Global.ACTION_LIST[Global.ActionList.DASH]: [
-			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_DASH],
-			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_DASH]
+			key_controls[ConfigSettings.CONTROL_DASH],
+			pad_controls[ConfigSettings.CONTROL_DASH]
 		],
 		Global.ACTION_LIST[Global.ActionList.UP]: [
-			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_UP],
-			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_UP]
+			key_controls[ConfigSettings.CONTROL_UP],
+			pad_controls[ConfigSettings.CONTROL_UP]
 		],
 		Global.ACTION_LIST[Global.ActionList.DOWN]: [
-			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_DOWN],
-			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_DOWN]
+			key_controls[ConfigSettings.CONTROL_DOWN],
+			pad_controls[ConfigSettings.CONTROL_DOWN]
 		],
 		Global.ACTION_LIST[Global.ActionList.LEFT]: [
-			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_LEFT],
-			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_LEFT]
+			key_controls[ConfigSettings.CONTROL_LEFT],
+			pad_controls[ConfigSettings.CONTROL_LEFT]
 		],
 		Global.ACTION_LIST[Global.ActionList.RIGHT]: [
-			controls[ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_RIGHT],
-			controls[ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_RIGHT]
+			key_controls[ConfigSettings.CONTROL_RIGHT],
+			pad_controls[ConfigSettings.CONTROL_RIGHT]
+		],
+		Global.ACTION_LIST[Global.ActionList.RESTART]: [
+			key_controls[ConfigSettings.CONTROL_RESTART],
+			pad_controls[ConfigSettings.CONTROL_RESTART]
 		],
 	}
 	
@@ -145,24 +161,34 @@ func load_config() -> void:
 	file.close()
 	
 	# Manually assign all config values
+	var temp_config_controls = temp_config[ConfigSettings.CONTROLS]
+	var temp_config_key_controls = temp_config_controls[ConfigSettings.CONTROLS_KEY]
+	var temp_config_pad_controls = temp_config_controls[ConfigSettings.CONTROLS_PAD]
+
+	var default_key_controls = default_controls[ConfigSettings.CONTROLS_KEY]
+	var default_pad_controls = default_controls[ConfigSettings.CONTROLS_PAD]
+
+	# Assign all values and substitute the default if it is missing
 	var incoming_changes = {
-		ConfigSettings.DISPLAY_MODE: temp_config[ConfigSettings.DISPLAY_MODE],
+		ConfigSettings.DISPLAY_MODE: temp_config[ConfigSettings.DISPLAY_MODE] if temp_config.has(ConfigSettings.DISPLAY_MODE) else default_settings[ConfigSettings.DISPLAY_MODE],
 		ConfigSettings.CONTROLS: {
 			ConfigSettings.CONTROLS_KEY: {
-				ConfigSettings.CONTROL_UP: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_UP],
-				ConfigSettings.CONTROL_DOWN: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_DOWN],
-				ConfigSettings.CONTROL_LEFT: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_LEFT],
-				ConfigSettings.CONTROL_RIGHT: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_RIGHT],
-				ConfigSettings.CONTROL_JUMP: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_JUMP],
-				ConfigSettings.CONTROL_DASH: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_KEY][ConfigSettings.CONTROL_DASH],
+				ConfigSettings.CONTROL_UP: temp_config_key_controls[ConfigSettings.CONTROL_UP] if temp_config_key_controls.has(ConfigSettings.CONTROL_UP) else default_key_controls[ConfigSettings.CONTROL_UP],
+				ConfigSettings.CONTROL_DOWN: temp_config_key_controls[ConfigSettings.CONTROL_DOWN] if temp_config_key_controls.has(ConfigSettings.CONTROL_DOWN) else default_key_controls[ConfigSettings.CONTROL_DOWN],
+				ConfigSettings.CONTROL_LEFT: temp_config_key_controls[ConfigSettings.CONTROL_LEFT] if temp_config_key_controls.has(ConfigSettings.CONTROL_LEFT) else default_key_controls[ConfigSettings.CONTROL_LEFT],
+				ConfigSettings.CONTROL_RIGHT: temp_config_key_controls[ConfigSettings.CONTROL_RIGHT] if temp_config_key_controls.has(ConfigSettings.CONTROL_RIGHT) else default_key_controls[ConfigSettings.CONTROL_RIGHT],
+				ConfigSettings.CONTROL_JUMP: temp_config_key_controls[ConfigSettings.CONTROL_JUMP] if temp_config_key_controls.has(ConfigSettings.CONTROL_JUMP) else default_key_controls[ConfigSettings.CONTROL_JUMP],
+				ConfigSettings.CONTROL_DASH: temp_config_key_controls[ConfigSettings.CONTROL_DASH] if temp_config_key_controls.has(ConfigSettings.CONTROL_DASH) else default_key_controls[ConfigSettings.CONTROL_DASH],
+				ConfigSettings.CONTROL_RESTART: temp_config_key_controls[ConfigSettings.CONTROL_RESTART] if temp_config_key_controls.has(ConfigSettings.CONTROL_RESTART) else default_key_controls[ConfigSettings.CONTROL_RESTART],
 			},
 			ConfigSettings.CONTROLS_PAD: {
-				ConfigSettings.CONTROL_UP: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_UP],
-				ConfigSettings.CONTROL_DOWN: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_DOWN],
-				ConfigSettings.CONTROL_LEFT: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_LEFT],
-				ConfigSettings.CONTROL_RIGHT: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_RIGHT],
-				ConfigSettings.CONTROL_JUMP: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_JUMP],
-				ConfigSettings.CONTROL_DASH: temp_config[ConfigSettings.CONTROLS][ConfigSettings.CONTROLS_PAD][ConfigSettings.CONTROL_DASH],
+				ConfigSettings.CONTROL_UP: temp_config_pad_controls[ConfigSettings.CONTROL_UP] if temp_config_pad_controls.has(ConfigSettings.CONTROL_UP) else default_pad_controls[ConfigSettings.CONTROL_UP],
+				ConfigSettings.CONTROL_DOWN: temp_config_pad_controls[ConfigSettings.CONTROL_DOWN] if temp_config_pad_controls.has(ConfigSettings.CONTROL_DOWN) else default_pad_controls[ConfigSettings.CONTROL_DOWN],
+				ConfigSettings.CONTROL_LEFT: temp_config_pad_controls[ConfigSettings.CONTROL_LEFT] if temp_config_pad_controls.has(ConfigSettings.CONTROL_LEFT) else default_pad_controls[ConfigSettings.CONTROL_LEFT],
+				ConfigSettings.CONTROL_RIGHT: temp_config_pad_controls[ConfigSettings.CONTROL_RIGHT] if temp_config_pad_controls.has(ConfigSettings.CONTROL_RIGHT) else default_pad_controls[ConfigSettings.CONTROL_RIGHT],
+				ConfigSettings.CONTROL_JUMP: temp_config_pad_controls[ConfigSettings.CONTROL_JUMP] if temp_config_pad_controls.has(ConfigSettings.CONTROL_JUMP) else default_pad_controls[ConfigSettings.CONTROL_JUMP],
+				ConfigSettings.CONTROL_DASH: temp_config_pad_controls[ConfigSettings.CONTROL_DASH] if temp_config_pad_controls.has(ConfigSettings.CONTROL_DASH) else default_pad_controls[ConfigSettings.CONTROL_DASH],
+				ConfigSettings.CONTROL_RESTART: temp_config_pad_controls[ConfigSettings.CONTROL_RESTART] if temp_config_pad_controls.has(ConfigSettings.CONTROL_RESTART) else default_pad_controls[ConfigSettings.CONTROL_RESTART],
 			}
 		}
 	}

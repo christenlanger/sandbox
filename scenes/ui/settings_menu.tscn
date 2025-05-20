@@ -59,9 +59,10 @@ theme = ExtResource("4_0b1cv")
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 1
 
 [node name="Display" type="PanelContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -141,7 +142,6 @@ focus_mode = 0
 text = "⮞"
 
 [node name="Controls" type="PanelContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -397,6 +397,12 @@ to = NodePath("../../HasModal")
 event = &"open_modal"
 delay_in_seconds = "0.0"
 
+[node name="On AwaitingInput" type="Node" parent="StateChart/Root/Enabled"]
+script = ExtResource("9_r6v77")
+to = NodePath("../../AwaitingInput")
+event = &"start_input"
+delay_in_seconds = "0.0"
+
 [node name="HasModal" type="Node" parent="StateChart/Root"]
 script = ExtResource("8_iii5b")
 
@@ -406,7 +412,17 @@ to = NodePath("../../Enabled")
 event = &"close_modal"
 delay_in_seconds = "0.0"
 
-[connection signal="tab_changed" from="VBoxContainer/TabContainer" to="." method="_on_tab_container_tab_changed"]
+[node name="AwaitingInput" type="Node" parent="StateChart/Root"]
+script = ExtResource("8_iii5b")
+
+[node name="On Enabled" type="Node" parent="StateChart/Root/AwaitingInput"]
+script = ExtResource("9_r6v77")
+to = NodePath("../../Enabled")
+event = &"end_input"
+delay_in_seconds = "0.0"
+
 [connection signal="focus_entered" from="VBoxContainer/TabContainer/Display/VBoxContainer/MarginContainer/VBoxContainer/DisplayMode/DisplayScroll/DisplayModeContainer" to="." method="_on_display_mode_container_focus_entered"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Exit" to="." method="_attempt_to_close"]
 [connection signal="state_input" from="StateChart/Root/Enabled" to="." method="_on_enabled_state_input"]
+[connection signal="state_input" from="StateChart/Root/AwaitingInput" to="." method="_on_awaiting_input_state_input"]
+[connection signal="taken" from="StateChart/Root/AwaitingInput/On Enabled" to="." method="_on_on_enabled_taken"]
