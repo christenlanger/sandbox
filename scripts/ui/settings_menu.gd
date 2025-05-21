@@ -176,6 +176,10 @@ func _input_shortname(text: String) -> String:
 					result += "RS(Down)"
 				elif strength <= -0.5:
 					result += "RS(Up)"
+		elif motion_text[0].match("*Left Trigger*"):
+			result += "LT"
+		elif motion_text[0].match("*Right Trigger*"):
+			result += "RT"
 		else:
 			result = text
 	else:
@@ -188,7 +192,7 @@ func _on_awaiting_input_state_input(event: InputEvent) -> void:
 		_modal.queue_free()
 		state_chart.send_event("end_input")
 		
-	elif event is InputEventKey or event is InputEventJoypadButton or event is InputEventJoypadMotion:
+	elif event is InputEventKey or event is InputEventJoypadButton or (event is InputEventJoypadMotion and abs(event.axis_value) >= 1.0):
 		var action_prefix := "key_" if event is InputEventKey else "pad_"
 		var action_type := Config.ConfigSettings.CONTROLS_KEY if event is InputEventKey else Config.ConfigSettings.CONTROLS_PAD
 		
