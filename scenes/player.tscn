@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://bmvn5xjxutjdm"]
+[gd_scene load_steps=54 format=3 uid="uid://bmvn5xjxutjdm"]
 
 [ext_resource type="Script" uid="uid://bs5sxurk5teb" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="3_dqkch"]
@@ -8,6 +8,10 @@
 [ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="6_ur7pv"]
 [ext_resource type="Script" uid="uid://c1vp0ojjvaby1" path="res://addons/godot_state_charts/parallel_state.gd" id="7_y4r1p"]
 [ext_resource type="Script" uid="uid://le5w1cm0ul8p" path="res://addons/godot_state_charts/expression_guard.gd" id="8_d2wvv"]
+
+[sub_resource type="Curve" id="Curve_smehm"]
+_data = [Vector2(0, 1), 0.0, -0.407625, 0, 0, Vector2(1, 0), -1.49674, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_smehm"]
 radius = 5.0
@@ -306,6 +310,7 @@ metadata/_custom_type_script = "uid://le5w1cm0ul8p"
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_g2els")
+_camera_curve = SubResource("Curve_smehm")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 position = Vector2(0, -5)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://bpvbogkvtxrbp"]
+[gd_scene load_steps=21 format=4 uid="uid://bpvbogkvtxrbp"]
 
 [ext_resource type="Script" uid="uid://dkoxpbo7wwihb" path="res://scripts/stages/stage_1.gd" id="1_1tge3"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_relhn"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bdsiur7r08rsn" path="res://scenes/killzone.tscn" id="6_qm7fq"]
 [ext_resource type="Script" uid="uid://sda8fuloe460" path="res://scripts/stages/ui.gd" id="7_bjuw2"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="7_emlwg"]
+[ext_resource type="Script" uid="uid://cfa05rdpecco1" path="res://scripts/classes/checkpoint.gd" id="7_mm8bn"]
 [ext_resource type="PackedScene" uid="uid://bgm15klbunlo3" path="res://scenes/ui/pause_menu.tscn" id="8_relhn"]
 
 [sub_resource type="Animation" id="Animation_pipme"]
@@ -96,6 +97,9 @@ _data = {
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bjuw2"]
 normal = Vector2(-1, 0)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bjuw2"]
+size = Vector2(20, 80)
+
 [node name="Stage1" type="Node2D" groups=["stages"]]
 script = ExtResource("1_1tge3")
 
@@ -114,7 +118,6 @@ limit_left = -140
 limit_top = -192
 limit_right = 765
 limit_bottom = 46
-position_smoothing_enabled = true
 position_smoothing_speed = 1.5
 drag_top_margin = 0.4
 drag_bottom_margin = 0.0
@@ -266,14 +269,30 @@ libraries = {
 }
 autoplay = "color_cycle"
 
-[node name="Checkpoint" type="Area2D" parent="TriggerZones" groups=["checkpoints"]]
-position = Vector2(327, -30)
+[node name="Checkpoints" type="Node2D" parent="TriggerZones"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerZones/Checkpoint"]
+[node name="Checkpoint" type="Area2D" parent="TriggerZones/Checkpoints" groups=["checkpoints"]]
+position = Vector2(327, -30)
+collision_mask = 2
+script = ExtResource("7_mm8bn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerZones/Checkpoints/Checkpoint"]
 shape = SubResource("WorldBoundaryShape2D_bjuw2")
 
-[node name="Marker2D" type="Marker2D" parent="TriggerZones/Checkpoint"]
+[node name="Marker2D" type="Marker2D" parent="TriggerZones/Checkpoints/Checkpoint"]
 position = Vector2(18, 16)
+
+[node name="Checkpoint2" type="Area2D" parent="TriggerZones/Checkpoints" groups=["checkpoints"]]
+position = Vector2(662, -98)
+collision_mask = 2
+script = ExtResource("7_mm8bn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerZones/Checkpoints/Checkpoint2"]
+position = Vector2(-16, -54)
+shape = SubResource("RectangleShape2D_bjuw2")
+
+[node name="Marker2D" type="Marker2D" parent="TriggerZones/Checkpoints/Checkpoint2"]
+position = Vector2(86, -31)
 
 [node name="UI" type="CanvasLayer" parent="." groups=["stage_ui"]]
 script = ExtResource("7_bjuw2")

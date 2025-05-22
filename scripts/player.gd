@@ -5,7 +5,7 @@ const SPEED = 90.0
 const DEFAULT_SPEED_MULTIPLIER = 1.0
 const DASH_SPEED = 2.5
 const JUMP_VELOCITY = -300.0
-const CAMERA_SPEED = 1.5
+const CAMERA_SPEED = 2.0
 const CAMERA_OFFSET = 0.5
 const CAMERA_PAN_DOWN_DELAY = 0.5
 
@@ -19,10 +19,10 @@ const CAMERA_PAN_DOWN_DELAY = 0.5
 @onready var _ray_cast_down: RayCast2D = $RayCastDown
 
 @export var _camera: Camera2D
+@export var _camera_curve: Curve
 
 signal debug_text
-signal collide_with_killzone(area: Area2D)
-signal collide_with_checkpoint(area: Area2D)
+signal teleport_to_spawn
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var _gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -50,13 +50,16 @@ func _process(delta: float) -> void:
 	# Camera offset based on direction
 	if _camera:
 		var camera_speed := CAMERA_SPEED * delta
-
 		if _last_direction > 0:
-			#_camera.drag_horizontal_offset = min(CAMERA_OFFSET, _camera.drag_horizontal_offset + camera_speed)
-			_camera.drag_horizontal_offset = CAMERA_OFFSET
+			if _camera_curve and _camera.drag_horizontal_offset > 0:
+				camera_speed = camera_speed * _camera_curve.sample(abs(_camera.drag_horizontal_offset / CAMERA_OFFSET))
+			_camera.drag_horizontal_offset = min(CAMERA_OFFSET, _camera.drag_horizontal_offset + camera_speed)
+			#_camera.drag_horizontal_offset = CAMERA_OFFSET
 		elif _last_direction < 0:
-			#_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
-			_camera.drag_horizontal_offset = CAMERA_OFFSET * -1
+			if _camera_curve and _camera.drag_horizontal_offset < 0:
+				camera_speed = camera_speed * _camera_curve.sample(abs(_camera.drag_horizontal_offset / CAMERA_OFFSET))
+			_camera.drag_horizontal_offset = max(CAMERA_OFFSET * -1, _camera.drag_horizontal_offset - camera_speed)
+			#_camera.drag_horizontal_offset = CAMERA_OFFSET * -1
 
 
 func _on_can_move_state_physics_processing(delta: float) -> void:
@@ -108,18 +111,19 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 
 # Enable crouch while grounded
 func _on_crouch_enabled_state_physics_processing(delta: float) -> void:
+	var camera_speed := CAMERA_SPEED * delta / 2
 	if Input.is_action_pressed(Global.ACTION_LIST[Global.ActionList.DOWN]):
 		_state_chart.send_event("crouch")
 		_animation_state_machine.travel("crouch")
 		_crouched_pressed = min(_crouched_pressed + delta, CAMERA_PAN_DOWN_DELAY)
 		if _crouched_pressed >= CAMERA_PAN_DOWN_DELAY:
-			if _camera.drag_vertical_offset < 0.5:
-				_camera.drag_vertical_offset = 0.5
+			_camera.drag_vertical_offset = min(_camera.drag_vertical_offset + camera_speed, CAMERA_OFFSET)
 	elif Input.is_action_just_released(Global.ACTION_LIST[Global.ActionList.DOWN]):
 		_crouched_pressed = 0
 		_state_chart.send_event("stand")
 		_animation_state_machine.travel("idle")
-		_camera.drag_vertical_offset = 0.0
+	elif _camera.drag_vertical_offset > 0:
+		_camera.drag_vertical_offset = max(0, _camera.drag_vertical_offset - camera_speed)
 	debug_text.emit(str(_crouched_pressed))
 
 # Process jump button including crouching state on one way platforms
@@ -209,3 +213,10 @@ func is_on_one_way_floor() -> bool:
 
 func restore_collision(mask: int) -> void:
 	self.collision_mask = mask
+
+
+func kill_player() -> void:
+	print("kill triggered")
+	
+	# Teleport to spawn
+	teleport_to_spawn.emit()
