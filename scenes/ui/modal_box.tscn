@@ -184,6 +184,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 6
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../ButtonCancel")
+focus_neighbor_bottom = NodePath(".")
 text = "OK"
 
 [node name="ButtonCancel" type="Button" parent="PanelContainer/VBoxContainer/MarginContainer/ButtonContainer"]
@@ -191,4 +195,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 6
+focus_neighbor_left = NodePath("../ButtonOK")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
 text = "Cancel"

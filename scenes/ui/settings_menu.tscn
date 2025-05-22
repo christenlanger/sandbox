@@ -425,6 +425,7 @@ delay_in_seconds = "0.0"
 
 [connection signal="focus_entered" from="VBoxContainer/TabContainer/Display/VBoxContainer/MarginContainer/VBoxContainer/DisplayMode/DisplayScroll/DisplayModeContainer" to="." method="_on_display_mode_container_focus_entered"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Apply" to="." method="_send_settings"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Default" to="." method="_on_default_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Exit" to="." method="_attempt_to_close"]
 [connection signal="state_input" from="StateChart/Root/Enabled" to="." method="_on_enabled_state_input"]
 [connection signal="state_input" from="StateChart/Root/HasModal" to="." method="_on_has_modal_state_input"]

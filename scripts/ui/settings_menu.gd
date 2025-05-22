@@ -69,8 +69,7 @@ func _on_tab_container_tab_changed(_tab: int) -> void:
 # Change values for pending config by key
 func change_setting(key: Config.ConfigSettings, value: Variant) -> void:
 	pending_config[key] = value
-	button_apply.disabled = false
-	_has_changed = true
+	set_changed(true)
 
 
 # Get setting value for provided key
@@ -78,6 +77,12 @@ func get_setting(key: Config.ConfigSettings) -> Variant:
 	if pending_config.has(key):
 		return pending_config[key]
 	return null
+
+
+# Mark changed value
+func set_changed(changed: bool) -> void:
+	_has_changed = changed
+	button_apply.disabled = not changed
 
 
 # For debugging
@@ -201,8 +206,7 @@ func _on_awaiting_input_state_input(event: InputEvent) -> void:
 			var action_reference = _action_reference[_current_input_node.name.right(-4)]
 			var input_event_to_change = pending_config[Config.ConfigSettings.CONTROLS][action_type][action_reference]
 			if _input_shortname(input_event_to_change.as_text()) != _input_shortname(event.as_text()):
-				button_apply.disabled = false
-				_has_changed = true
+				set_changed(true)
 			
 			# Check if current key is assigned anywhere else. Assign
 			# the event being overwritten to the old input map
@@ -261,6 +265,12 @@ func _on_has_modal_state_input(event: InputEvent) -> void:
 		_modal.cancel.emit()
 
 
+# Close modal dialogue
+func _close_modal() -> void:
+	_modal.queue_free()
+	_current_input_node.grab_focus()
+	state_chart.send_event("close_modal")
+
 ## Handle closing of the window and saving config settings
 
 # Run checks before closing the window
@@ -286,24 +296,53 @@ func _attempt_to_close() -> void:
 
 # Do not discard your changes and stay on the screen
 func _prevent_discard() -> void:
-	_modal.queue_free()
-	_current_input_node.grab_focus()
-	state_chart.send_event("close_modal")
+	_close_modal()
 
 
 # Discard your changes
 func _discard_changes() -> void:
+	_close_modal()
 	closed.emit.call_deferred()
 
 
 # Send the config variable to be processed
 func _send_settings() -> void:
 	if (_has_changed):
-		button_apply.disabled = true
-		_has_changed = false
+		set_changed(false)
 		send_settings.emit(pending_config)
 
 
 # Notify settings change
 func _notify_change() -> void:
 	send_message.emit("Settings changed.")
+
+
+# Set everything to default. This does not immediately apply settings.
+func _on_default_pressed() -> void:
+	_modal = load(Global.MODAL_SCENE).instantiate()
+	if is_instance_valid(_modal):
+		_current_input_node = get_viewport().gui_get_focus_owner()
+		_current_input_node.release_focus()
+		
+		add_child(_modal)
+		_modal.title = "Hold it!"
+		_modal.message = "Restore all settings to default?"
+		_modal.confirm.connect(_apply_default)
+		_modal.cancel.connect(_cancel_default)
+		_modal.click_cancel.connect(_cancel_default)
+		_modal.button_cancel.grab_focus()
+		
+		state_chart.send_event("open_modal")
+
+
+func _cancel_default() -> void:
+	_close_modal()
+
+
+func _apply_default() -> void:
+	pending_config = Config.default_settings
+	set_changed(true)
+	_display_mode_settings()
+	_input_map_settings()
+	
+	_close_modal()
