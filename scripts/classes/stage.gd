@@ -4,6 +4,9 @@ extends Node2D
 
 signal stage_reset
 signal stage_end
+signal enable_restart(enabled: bool)
+
+@export var _restart_enabled: bool = true
 
 var _can_clear := false
 
@@ -22,6 +25,9 @@ func _ready() -> void:
 	
 	for checkpoint in get_tree().get_nodes_in_group("checkpoints"):
 		checkpoint.set_spawn_point.connect(_on_set_spawn_point)
+	
+	# Set restarting accordingly
+	enable_restart.emit(_restart_enabled)
 
 
 func _do_stage_reset() -> void:

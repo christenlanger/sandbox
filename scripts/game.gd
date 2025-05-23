@@ -1,9 +1,10 @@
 extends Node2D
 
-@onready var _stage_container: Node2D = $StageContainer
+@export var _stage_container: Node2D
+@export var _ui: UI
+@export var _pause_menu: PauseMenu
 
-var _current_stage: Node2D
-var _pause_menu: Control
+var _current_stage: Stage
 var _settings_menu: Control
 var _stage_ct := 0
 
@@ -39,11 +40,7 @@ func load_stage(index: int) -> void:
 	_current_stage.ready.connect(_on_stage_loaded)
 	_current_stage.stage_end.connect(unload_stage)
 	_current_stage.stage_reset.connect(reset_stage)
-	
-	# Connect to pause menu signals
-	if _current_stage.has_node("%PauseMenu"):
-		_pause_menu = _current_stage.get_node("%PauseMenu")
-		_pause_menu.open_settings.connect(open_settings)
+	_current_stage.enable_restart.connect(enable_restart)
 	
 	# Add the loaded stage to the game
 	_stage_container.add_child(_current_stage)
@@ -53,6 +50,9 @@ func load_stage(index: int) -> void:
 func unload_stage() -> void:
 	if is_instance_valid(_current_stage):
 		_current_stage.queue_free()
+	
+	# Disable resetting
+	_ui.enabled = false
 	
 	_stage_ct += 1
 	load_stage(_stage_ct)
@@ -64,6 +64,11 @@ func reset_stage() -> void:
 		_current_stage.queue_free()
 	
 	load_stage(_stage_ct)
+
+
+# Toggle restarting
+func enable_restart(enabled: bool) -> void:
+	_ui.enabled = enabled
 
 
 # Handle inputs
@@ -93,4 +98,4 @@ func open_settings() -> void:
 		# If the pause menu is active, connect settings close signal to it as well
 		if is_instance_valid(_pause_menu):
 			_settings_menu.closed.connect(_pause_menu.close_settings)
-		_current_stage.get_node("UI").add_child(_settings_menu)
+		_ui.add_child(_settings_menu)

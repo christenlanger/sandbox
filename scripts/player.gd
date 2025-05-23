@@ -17,11 +17,11 @@ const CAMERA_PAN_DOWN_DELAY = 0.5
 @onready var _ray_cast_right: RayCast2D = $RayCastRight
 @onready var _ray_cast_left: RayCast2D = $RayCastLeft
 @onready var _ray_cast_down: RayCast2D = $RayCastDown
+@onready var _audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
 
 @export var _camera: Camera2D
 @export var _camera_curve: Curve
 
-signal debug_text
 signal teleport_to_spawn
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -87,12 +87,12 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	if is_on_floor():
 		if velocity.x == 0.0:
 			_animation_state_machine.travel("idle")
-		elif not _is_dashing:
+		elif !_is_dashing:
 			_animation_state_machine.travel("run")
 		
 		velocity.y = 0
 		# If we just touched the floor, notify state chart
-		if not _was_grounded:
+		if !_was_grounded:
 			_was_grounded = true
 			_state_chart.send_event("grounded")
 			if velocity.x == 0.0 and _long_fall:
@@ -116,15 +116,15 @@ func _on_crouch_enabled_state_physics_processing(delta: float) -> void:
 		_state_chart.send_event("crouch")
 		_animation_state_machine.travel("crouch")
 		_crouched_pressed = min(_crouched_pressed + delta, CAMERA_PAN_DOWN_DELAY)
-		if _crouched_pressed >= CAMERA_PAN_DOWN_DELAY:
+		if _camera and _crouched_pressed >= CAMERA_PAN_DOWN_DELAY:
 			_camera.drag_vertical_offset = min(_camera.drag_vertical_offset + camera_speed, CAMERA_OFFSET)
 	elif Input.is_action_just_released(Global.ACTION_LIST[Global.ActionList.DOWN]):
 		_crouched_pressed = 0
 		_state_chart.send_event("stand")
 		_animation_state_machine.travel("idle")
-	elif _camera.drag_vertical_offset > 0:
+	elif _camera and _camera.drag_vertical_offset > 0:
 		_camera.drag_vertical_offset = max(0, _camera.drag_vertical_offset - camera_speed)
-	debug_text.emit(str(_crouched_pressed))
+
 
 # Process jump button including crouching state on one way platforms
 func _on_jump_enabled_state_physics_processing(delta: float) -> void:

@@ -82,7 +82,7 @@ func get_setting(key: Config.ConfigSettings) -> Variant:
 # Mark changed value
 func set_changed(changed: bool) -> void:
 	_has_changed = changed
-	button_apply.disabled = not changed
+	button_apply.disabled = !changed
 
 
 # For debugging

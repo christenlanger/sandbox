@@ -1,3 +1,3 @@
 extends Node
 
-var _audio_stream := AudioStream
+var _audio_stream := AudioStreamPlayer

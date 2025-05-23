@@ -52,17 +52,3 @@ func _on_to_next_stage_body_entered(body: Node2D) -> void:
 
 func _on_to_next_stage_body_exited(body: Node2D) -> void:
 	_can_clear = false
-
-
-func _on_pause_menu_pause() -> void:
-	%PauseMenu.visible = true
-	get_tree().paused = true
-
-
-func _on_pause_menu_resume() -> void:
-	%PauseMenu.visible = false
-	get_tree().paused = false
-
-
-func _on_player_debug_text(text: String) -> void:
-	$UI/DebugText.text = text

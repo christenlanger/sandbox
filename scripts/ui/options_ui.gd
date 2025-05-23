@@ -69,7 +69,7 @@ func handle_input(event: InputEvent) -> void:
 
 # Fix for joypad handling
 func valid_joystick_input(event: InputEventJoypadMotion, action: String) -> bool:
-	if not input_rest and InputMap.action_has_event(action, event):
+	if !input_rest and InputMap.action_has_event(action, event):
 		var timer: Timer = Timer.new()
 		timer.timeout.connect(func():
 			input_rest = false

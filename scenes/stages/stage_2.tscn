@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://q0jnvta8hb7o"]
+[gd_scene load_steps=11 format=4 uid="uid://q0jnvta8hb7o"]
 
 [ext_resource type="Script" uid="uid://cxryokeqhfomo" path="res://scripts/stages/stage_2.gd" id="1_llf8k"]
 [ext_resource type="PackedScene" uid="uid://bmvn5xjxutjdm" path="res://scenes/player.tscn" id="2_tiiek"]
@@ -6,9 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bdsiur7r08rsn" path="res://scenes/killzone.tscn" id="4_kaxm4"]
 [ext_resource type="FontFile" uid="uid://qkhlgspnowsj" path="res://assets/PixelOperator8.ttf" id="5_tiiek"]
 [ext_resource type="Texture2D" uid="uid://ccbdeby2uebxg" path="res://assets/others/rick.png" id="6_dg2hc"]
-[ext_resource type="Script" uid="uid://sda8fuloe460" path="res://scripts/stages/ui.gd" id="7_rkiwu"]
-[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="8_rkiwu"]
-[ext_resource type="PackedScene" uid="uid://bgm15klbunlo3" path="res://scenes/ui/pause_menu.tscn" id="9_rkiwu"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_cg3n2"]
 
@@ -63,8 +60,11 @@ _camera = NodePath("Camera2D")
 [node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(4, 4)
 process_callback = 0
-position_smoothing_speed = 2.0
-drag_vertical_enabled = true
+limit_left = -140
+limit_top = -192
+limit_right = 765
+limit_bottom = 46
+position_smoothing_speed = 1.5
 drag_top_margin = 0.4
 drag_bottom_margin = 0.0
 
@@ -122,27 +122,3 @@ libraries = {
 &"": SubResource("AnimationLibrary_rxqpy")
 }
 autoplay = "roll"
-
-[node name="UI" type="CanvasLayer" parent="." groups=["stage_ui"]]
-script = ExtResource("7_rkiwu")
-
-[node name="StateChartDebugger" parent="UI" instance=ExtResource("8_rkiwu")]
-z_index = 99
-offset_left = 796.0
-offset_top = 9.0
-offset_right = -10.0
-offset_bottom = -398.0
-enabled = false
-initial_node_to_watch = NodePath("../../Player")
-
-[node name="DebugText" type="Label" parent="UI"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -23.0
-offset_right = 40.0
-grow_vertical = 0
-
-[node name="PauseMenu" parent="UI" instance=ExtResource("9_rkiwu")]
-unique_name_in_owner = true
-visible = false

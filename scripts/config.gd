@@ -70,7 +70,7 @@ func _get_action_event_by_type(action: String, type: int) -> InputEvent:
 	for event in InputMap.action_get_events(action):
 		if type and (event is InputEventJoypadButton or event is InputEventJoypadMotion):
 			return event
-		elif not type and event is InputEventKey:
+		elif !type and event is InputEventKey:
 			return event
 	
 	return null
@@ -153,7 +153,7 @@ func apply_inputmap_from_config(controls: Dictionary) -> void:
 
 
 func load_config() -> void:
-	if not FileAccess.file_exists(USER_PATH):
+	if !FileAccess.file_exists(USER_PATH):
 		save_config()
 	
 	var file := FileAccess.open(USER_PATH, FileAccess.READ)

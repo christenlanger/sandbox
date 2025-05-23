@@ -1,3 +1,5 @@
+class_name PauseMenu
+
 extends Control
 
 @export var enabled: bool = true
@@ -16,7 +18,7 @@ var is_paused := false
 
 # Wait for pause key to be pressed
 func _on_closed_state_input(event: InputEvent) -> void:
-	if event.is_action_pressed("pause"):
+	if enabled and event.is_action_pressed("pause"):
 		set_paused(true)
 
 
