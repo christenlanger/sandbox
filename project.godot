@@ -156,6 +156,11 @@ ui_next_page={
 ]
 }
 
+[internationalization]
+
+locale/translation_remaps={}
+locale/translations=PackedStringArray("res://localization.en.translation", "res://localization.ja.translation")
+
 [layer_names]
 
 2d_physics/layer_1="walls"

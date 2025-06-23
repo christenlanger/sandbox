@@ -5,8 +5,10 @@ extends Node2D
 signal stage_reset
 signal stage_end
 signal enable_restart(enabled: bool)
+signal set_bgm(bgm_name: String)
 
 @export var _restart_enabled: bool = true
+@export var _bgm_name: String = ""
 
 var _can_clear := false
 
@@ -28,6 +30,9 @@ func _ready() -> void:
 	
 	# Set restarting accordingly
 	enable_restart.emit(_restart_enabled)
+	
+	# Set BGM name
+	set_bgm.emit(_bgm_name)
 
 
 func _do_stage_reset() -> void:

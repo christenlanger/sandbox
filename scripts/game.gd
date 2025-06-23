@@ -3,6 +3,7 @@ extends Node2D
 @export var _stage_container: Node2D
 @export var _ui: UI
 @export var _pause_menu: PauseMenu
+@export var _bgm_manager: AudioStreamPlayer
 
 var _current_stage: Stage
 var _settings_menu: Control
@@ -16,6 +17,7 @@ enum GameFlags {
 var game_flags = {
 	GameFlags.IS_PAUSABLE: true,
 }
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -41,6 +43,7 @@ func load_stage(index: int) -> void:
 	_current_stage.stage_end.connect(unload_stage)
 	_current_stage.stage_reset.connect(reset_stage)
 	_current_stage.enable_restart.connect(enable_restart)
+	_current_stage.set_bgm.connect(set_bgm)
 	
 	# Add the loaded stage to the game
 	_stage_container.add_child(_current_stage)
@@ -54,6 +57,7 @@ func unload_stage() -> void:
 	# Disable resetting
 	_ui.enabled = false
 	
+	# TODO: Stage select or results screen whatever. A signal to go to those would be preferred as well.
 	_stage_ct += 1
 	load_stage(_stage_ct)
 
@@ -69,6 +73,15 @@ func reset_stage() -> void:
 # Toggle restarting
 func enable_restart(enabled: bool) -> void:
 	_ui.enabled = enabled
+
+
+# Play BGM
+func set_bgm(bgm_name: String) -> void:
+	if bgm_name == "":
+		_bgm_manager.stop()
+	else:
+		_bgm_manager.set("parameters/switch_to_clip", bgm_name)
+		_bgm_manager.play()
 
 
 # Handle inputs

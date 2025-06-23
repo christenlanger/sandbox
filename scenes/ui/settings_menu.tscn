@@ -201,18 +201,24 @@ theme_override_constants/margin_right = 30
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer/MarginContainer4"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "Up"
+text = "ACTION_UP"
 
 [node name="key_up" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../pad_up")
 text = "Up"
 
 [node name="pad_up" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath("../key_up")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
 text = "Up"
 
 [node name="MarginContainer5" type="MarginContainer" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
@@ -225,18 +231,20 @@ theme_override_constants/margin_right = 30
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer/MarginContainer5"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "Move Left"
+text = "ACTION_LEFT"
 
 [node name="key_move_left" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
 text = "Up"
 
 [node name="pad_move_left" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_right = NodePath(".")
 text = "Up"
 
 [node name="MarginContainer6" type="MarginContainer" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
@@ -249,18 +257,20 @@ theme_override_constants/margin_right = 30
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer/MarginContainer6"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "Move Right"
+text = "ACTION_RIGHT"
 
 [node name="key_move_right" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
 text = "Up"
 
 [node name="pad_move_right" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_right = NodePath(".")
 text = "Up"
 
 [node name="MarginContainer7" type="MarginContainer" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
@@ -273,18 +283,20 @@ theme_override_constants/margin_right = 30
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer/MarginContainer7"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "Crouch"
+text = "ACTION_DOWN"
 
 [node name="key_crouch" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
 text = "Up"
 
 [node name="pad_crouch" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_right = NodePath(".")
 text = "Up"
 
 [node name="MarginContainer8" type="MarginContainer" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
@@ -297,18 +309,20 @@ theme_override_constants/margin_right = 30
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer/MarginContainer8"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "Jump"
+text = "ACTION_JUMP"
 
 [node name="key_jump" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
 text = "Up"
 
 [node name="pad_jump" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_right = NodePath(".")
 text = "Up"
 
 [node name="MarginContainer9" type="MarginContainer" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
@@ -321,18 +335,20 @@ theme_override_constants/margin_right = 30
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer/MarginContainer9"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "Dash"
+text = "ACTION_DASH"
 
 [node name="key_dash" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
 text = "Up"
 
 [node name="pad_dash" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_right = NodePath(".")
 text = "Up"
 
 [node name="MarginContainer10" type="MarginContainer" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
@@ -345,18 +361,20 @@ theme_override_constants/margin_right = 30
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer/MarginContainer10"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "Checkpoint"
+text = "ACTION_RESET"
 
 [node name="key_restart" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
 text = "Up"
 
 [node name="pad_restart" type="Button" parent="VBoxContainer/TabContainer/Controls/MarginContainer/ControlsContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_right = NodePath(".")
 text = "Up"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
@@ -367,6 +385,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(268, 36)
 layout_mode = 2
 size_flags_horizontal = 10
+focus_neighbor_left = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
 disabled = true
 text = "Apply Changes"
 
@@ -374,12 +394,15 @@ text = "Apply Changes"
 custom_minimum_size = Vector2(268, 36)
 layout_mode = 2
 size_flags_horizontal = 8
+focus_neighbor_bottom = NodePath(".")
 text = "Restore to Defaults"
 
 [node name="Exit" type="Button" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(268, 36)
 layout_mode = 2
 size_flags_horizontal = 8
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
 text = "Go Back"
 
 [node name="StateChart" type="Node" parent="."]

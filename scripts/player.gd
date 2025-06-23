@@ -5,6 +5,7 @@ const SPEED = 90.0
 const DEFAULT_SPEED_MULTIPLIER = 1.0
 const DASH_SPEED = 2.5
 const JUMP_VELOCITY = -300.0
+const FADE_DURATION = 1.0
 const CAMERA_SPEED = 2.0
 const CAMERA_OFFSET = 0.5
 const CAMERA_PAN_DOWN_DELAY = 0.5
@@ -186,6 +187,23 @@ func _on_bunnyhop_expire() -> void:
 func _reset_speed_multiplier() -> void:
 	_speed_multiplier = DEFAULT_SPEED_MULTIPLIER
 
+
+# Afterimage
+func draw_afterimage() -> void:
+	var afterimage := Node2D.new()
+	var afterimage_sprite = _sprite.duplicate()
+	var tween = get_tree().create_tween()
+	
+	afterimage.add_child(afterimage_sprite)
+	afterimage.global_position = self.global_position
+	self.get_parent().add_child(afterimage)
+	
+	tween.tween_property(afterimage_sprite, "modulate:a", 0, FADE_DURATION)
+	tween.play()
+	tween.finished.connect(func():
+		tween.kill()
+		afterimage.queue_free()
+	)
 
 # Process jump hold frames
 func _on_rising_state_physics_processing(delta: float) -> void:

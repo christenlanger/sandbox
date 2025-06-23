@@ -1,0 +1,12 @@
+key,en,ja
+TITLE_PAUSED,Paused,Paused
+OPTION_RESUME,Resume,ゲームを戻る
+OPTION_SETTINGS,Settings,設定
+OPTION_QUIT,Quit to Desktop,ゲームをやめる
+ACTION_UP,Up,上
+ACTION_DOWN,Crouch,しゃがむ
+ACTION_LEFT,Move Left,左
+ACTION_RIGHT,Move Right,右
+ACTION_JUMP,Jump,ジャンプ
+ACTION_DASH,Dash,ダッシュ
+ACTION_RESET,Checkpoint,チェックポイント

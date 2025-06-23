@@ -31,7 +31,7 @@ offset_right = 63.0
 offset_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Paused"
+text = "TITLE_PAUSED"
 label_settings = ExtResource("2_kukqi")
 horizontal_alignment = 1
 
@@ -55,14 +55,14 @@ size_flags_vertical = 6
 focus_neighbor_top = NodePath("../Quit to Desktop")
 theme = ExtResource("2_0lmf7")
 theme_type_variation = &"FlatButton"
-text = "Resume"
+text = "OPTION_RESUME"
 
 [node name="Settings" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 6
 theme = ExtResource("2_0lmf7")
 theme_type_variation = &"FlatButton"
-text = "Settings"
+text = "OPTION_SETTINGS"
 
 [node name="Quit to Desktop" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -70,7 +70,7 @@ size_flags_vertical = 6
 focus_neighbor_bottom = NodePath("../Resume")
 theme = ExtResource("2_0lmf7")
 theme_type_variation = &"FlatButton"
-text = "Quit to Desktop"
+text = "OPTION_QUIT"
 
 [node name="StateChart" type="Node" parent="."]
 script = ExtResource("5_2rlsb")
