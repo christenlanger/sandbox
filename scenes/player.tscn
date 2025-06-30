@@ -360,170 +360,195 @@ script = ExtResource("4_qlg0r")
 initial_state = NodePath("CannotMove")
 
 [node name="CanMove" type="Node" parent="StateChart/Root"]
+script = ExtResource("7_y4r1p")
+
+[node name="MoveState" type="Node" parent="StateChart/Root/CanMove"]
 script = ExtResource("4_qlg0r")
 initial_state = NodePath("Grounded")
 
-[node name="On CannotMove" type="Node" parent="StateChart/Root/CanMove"]
+[node name="On CannotMove" type="Node" parent="StateChart/Root/CanMove/MoveState"]
 script = ExtResource("5_smehm")
-to = NodePath("../../CannotMove")
+to = NodePath("../../../CannotMove")
 event = &"disable_move"
 delay_in_seconds = "0.0"
 
-[node name="Grounded" type="Node" parent="StateChart/Root/CanMove"]
+[node name="Grounded" type="Node" parent="StateChart/Root/CanMove/MoveState"]
 script = ExtResource("4_qlg0r")
 initial_state = NodePath("Normal")
 
-[node name="Normal" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+[node name="Normal" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/Grounded/Normal"]
+[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/Normal"]
 script = ExtResource("5_smehm")
 to = NodePath("../../../Airborne/JumpState/CoyoteTime")
 event = &"airborne"
 delay_in_seconds = "0.0"
 
-[node name="On Dash" type="Node" parent="StateChart/Root/CanMove/Grounded/Normal"]
+[node name="On Dash" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/Normal"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Dashing")
 event = &"dash"
 delay_in_seconds = "0.0"
 
-[node name="On Crouch" type="Node" parent="StateChart/Root/CanMove/Grounded/Normal"]
+[node name="On Crouch" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/Normal"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Crouching")
 event = &"crouch"
 delay_in_seconds = "0.0"
 
-[node name="Dashing" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+[node name="Dashing" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/Grounded/Dashing"]
+[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/Dashing"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Normal")
 delay_in_seconds = "0.2"
 
-[node name="On Jump" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+[node name="On Jump" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Airborne/JumpState/DblJumpEnabled")
 event = &"jump"
 delay_in_seconds = "0.0"
 
-[node name="CanBunnyHop" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+[node name="CanBunnyHop" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
+[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/CanBunnyHop"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Normal")
 delay_in_seconds = "0.07"
 
-[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
+[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/CanBunnyHop"]
 script = ExtResource("5_smehm")
 to = NodePath("../../../Airborne/JumpState/CoyoteTime")
 event = &"airborne"
 delay_in_seconds = "0.0"
 
-[node name="On Dash" type="Node" parent="StateChart/Root/CanMove/Grounded/CanBunnyHop"]
+[node name="On Dash" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/CanBunnyHop"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Dashing")
 event = &"dash"
 delay_in_seconds = "0.0"
 
-[node name="Crouching" type="Node" parent="StateChart/Root/CanMove/Grounded"]
+[node name="Crouching" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/Grounded/Crouching"]
+[node name="On Airborne" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/Crouching"]
 script = ExtResource("5_smehm")
 to = NodePath("../../../Airborne/JumpState/CoyoteTime")
 event = &"airborne"
 delay_in_seconds = "0.0"
 
-[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/Grounded/Crouching"]
+[node name="On Normal" type="Node" parent="StateChart/Root/CanMove/MoveState/Grounded/Crouching"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Normal")
 event = &"stand"
 delay_in_seconds = "0.0"
 
-[node name="Airborne" type="Node" parent="StateChart/Root/CanMove"]
+[node name="Airborne" type="Node" parent="StateChart/Root/CanMove/MoveState"]
 script = ExtResource("7_y4r1p")
 
-[node name="JumpState" type="Node" parent="StateChart/Root/CanMove/Airborne"]
+[node name="JumpState" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne"]
 script = ExtResource("4_qlg0r")
 initial_state = NodePath("CoyoteTime")
 
-[node name="CannotJump" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+[node name="CannotJump" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpState"]
 script = ExtResource("6_ur7pv")
 
-[node name="DblJumpEnabled" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+[node name="DblJumpEnabled" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpState"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Jump" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState/DblJumpEnabled"]
+[node name="On Jump" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpState/DblJumpEnabled"]
 script = ExtResource("5_smehm")
 to = NodePath("../../CannotJump")
 event = &"jump"
 delay_in_seconds = "0.0"
 
-[node name="CoyoteTime" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+[node name="CoyoteTime" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpState"]
 script = ExtResource("6_ur7pv")
 
-[node name="On DblJumpEnabled" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState/CoyoteTime"]
+[node name="On DblJumpEnabled" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpState/CoyoteTime"]
 script = ExtResource("5_smehm")
 to = NodePath("../../DblJumpEnabled")
 delay_in_seconds = "0.1"
 
-[node name="On Grounded" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpState"]
+[node name="On Grounded" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpState"]
 script = ExtResource("5_smehm")
 to = NodePath("../../../Grounded/CanBunnyHop")
 event = &"grounded"
 delay_in_seconds = "0.0"
 
-[node name="JumpDirection" type="Node" parent="StateChart/Root/CanMove/Airborne"]
+[node name="JumpDirection" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne"]
 script = ExtResource("4_qlg0r")
 initial_state = NodePath("Rising")
 
-[node name="Rising" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection"]
+[node name="Rising" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Falling" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/Rising"]
+[node name="On Falling" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/Rising"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Falling")
 guard = SubResource("Resource_3v2ag")
 delay_in_seconds = "0.0"
 
-[node name="On HighJump" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/Rising"]
+[node name="On HighJump" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/Rising"]
 script = ExtResource("5_smehm")
 to = NodePath("../../HighJump")
 delay_in_seconds = "0.2"
 
-[node name="HighJump" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection"]
+[node name="HighJump" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Falling" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/HighJump"]
+[node name="On Falling" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/HighJump"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Falling")
 guard = SubResource("Resource_3v2ag")
 delay_in_seconds = "0.0"
 
-[node name="Falling" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection"]
+[node name="Falling" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Rising" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/Falling"]
+[node name="On Rising" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/Falling"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Rising")
 guard = SubResource("Resource_jej6c")
 delay_in_seconds = "0.0"
 
-[node name="On LongFall" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/Falling"]
+[node name="On LongFall" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/Falling"]
 script = ExtResource("5_smehm")
 to = NodePath("../../LongFall")
 delay_in_seconds = "0.5"
 
-[node name="LongFall" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection"]
+[node name="LongFall" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection"]
 script = ExtResource("6_ur7pv")
 
-[node name="On Rising" type="Node" parent="StateChart/Root/CanMove/Airborne/JumpDirection/LongFall"]
+[node name="On Rising" type="Node" parent="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/LongFall"]
 script = ExtResource("5_smehm")
 to = NodePath("../../Rising")
 guard = SubResource("Resource_jej6c")
+delay_in_seconds = "0.0"
+
+[node name="SpeedState" type="Node" parent="StateChart/Root/CanMove"]
+script = ExtResource("4_qlg0r")
+initial_state = NodePath("Normal")
+
+[node name="Normal" type="Node" parent="StateChart/Root/CanMove/SpeedState"]
+script = ExtResource("6_ur7pv")
+
+[node name="To Fast" type="Node" parent="StateChart/Root/CanMove/SpeedState/Normal"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Fast")
+event = &"speed_fast"
+delay_in_seconds = "0.0"
+
+[node name="Fast" type="Node" parent="StateChart/Root/CanMove/SpeedState"]
+script = ExtResource("6_ur7pv")
+
+[node name="To Normal" type="Node" parent="StateChart/Root/CanMove/SpeedState/Fast"]
+script = ExtResource("5_smehm")
+to = NodePath("../../Normal")
+event = &"speed_normal"
 delay_in_seconds = "0.0"
 
 [node name="CannotMove" type="Node" parent="StateChart/Root"]
@@ -531,26 +556,29 @@ script = ExtResource("6_ur7pv")
 
 [node name="On CanMove" type="Node" parent="StateChart/Root/CannotMove"]
 script = ExtResource("5_smehm")
-to = NodePath("../../CanMove")
+to = NodePath("../../CanMove/MoveState")
 event = &"enable_move"
 delay_in_seconds = "0.0"
 
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded" to="." method="_on_jump_enabled_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_crouch_enabled_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_can_move_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Normal" to="." method="_on_dash_enabled_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_dashing_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Dashing" to="." method="_on_jump_enabled_state_physics_processing"]
-[connection signal="taken" from="StateChart/Root/CanMove/Grounded/Dashing/On Normal" to="." method="_on_dash_end"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/CanBunnyHop" to="." method="_on_can_move_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/CanBunnyHop" to="." method="_on_dash_enabled_state_physics_processing"]
-[connection signal="taken" from="StateChart/Root/CanMove/Grounded/CanBunnyHop/On Normal" to="." method="_on_bunnyhop_expire"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Grounded/Crouching" to="." method="_on_crouch_enabled_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne" to="." method="_on_can_move_state_physics_processing"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpState/DblJumpEnabled" to="." method="_on_jump_enabled_state_physics_processing"]
-[connection signal="taken" from="StateChart/Root/CanMove/Airborne/JumpState/DblJumpEnabled/On Jump" to="." method="_on_doublejump_jump"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpState/CoyoteTime" to="." method="_on_jump_enabled_state_physics_processing"]
-[connection signal="state_entered" from="StateChart/Root/CanMove/Airborne/JumpDirection/Rising" to="." method="_on_rising_state_entered"]
-[connection signal="state_physics_processing" from="StateChart/Root/CanMove/Airborne/JumpDirection/Rising" to="." method="_on_rising_state_physics_processing"]
-[connection signal="state_entered" from="StateChart/Root/CanMove/Airborne/JumpDirection/Falling" to="." method="_on_falling_state_entered"]
-[connection signal="state_entered" from="StateChart/Root/CanMove/Airborne/JumpDirection/LongFall" to="." method="_on_long_fall_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/Normal" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/Normal" to="." method="_on_dash_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/Normal" to="." method="_on_crouch_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/Dashing" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/Dashing" to="." method="_on_dashing_state_physics_processing"]
+[connection signal="taken" from="StateChart/Root/CanMove/MoveState/Grounded/Dashing/On Normal" to="." method="_on_dash_end"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/CanBunnyHop" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/CanBunnyHop" to="." method="_on_dash_enabled_state_physics_processing"]
+[connection signal="taken" from="StateChart/Root/CanMove/MoveState/Grounded/CanBunnyHop/On Normal" to="." method="_on_bunnyhop_expire"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Grounded/Crouching" to="." method="_on_crouch_enabled_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Airborne" to="." method="_on_can_move_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Airborne/JumpState/DblJumpEnabled" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="taken" from="StateChart/Root/CanMove/MoveState/Airborne/JumpState/DblJumpEnabled/On Jump" to="." method="_on_doublejump_jump"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Airborne/JumpState/CoyoteTime" to="." method="_on_jump_enabled_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/Rising" to="." method="_on_rising_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/Rising" to="." method="_on_rising_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/Falling" to="." method="_on_falling_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/CanMove/MoveState/Airborne/JumpDirection/LongFall" to="." method="_on_long_fall_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/CanMove/SpeedState/Normal" to="." method="_reset_speed_multiplier"]
+[connection signal="state_entered" from="StateChart/Root/CanMove/SpeedState/Fast" to="." method="_on_fast_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/CanMove/SpeedState/Fast" to="." method="_on_fast_state_physics_processing"]

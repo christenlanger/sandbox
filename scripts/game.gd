@@ -40,8 +40,8 @@ func load_stage(index: int) -> void:
 	# Instantiate the stage and connect to signals
 	_current_stage = load(Global.STAGES[index]).instantiate()
 	_current_stage.ready.connect(_on_stage_loaded)
-	_current_stage.stage_end.connect(unload_stage)
-	_current_stage.stage_reset.connect(reset_stage)
+	_current_stage.stage_end.connect(unload_stage, ConnectFlags.CONNECT_DEFERRED)
+	_current_stage.stage_reset.connect(reset_stage, ConnectFlags.CONNECT_DEFERRED)
 	_current_stage.enable_restart.connect(enable_restart)
 	_current_stage.set_bgm.connect(set_bgm)
 	

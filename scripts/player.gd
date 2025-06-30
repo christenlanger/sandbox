@@ -5,7 +5,7 @@ const SPEED = 90.0
 const DEFAULT_SPEED_MULTIPLIER = 1.0
 const DASH_SPEED = 2.5
 const JUMP_VELOCITY = -300.0
-const FADE_DURATION = 1.0
+const FADE_DURATION = 0.5
 const CAMERA_SPEED = 2.0
 const CAMERA_OFFSET = 0.5
 const CAMERA_PAN_DOWN_DELAY = 0.5
@@ -35,6 +35,7 @@ var _speed_multiplier := 1.0
 var _last_direction := 1.0
 var _long_fall := false
 var _crouched_pressed := 0.0
+var _draw_afterimage := true
 
 
 func _ready() -> void:
@@ -46,7 +47,7 @@ func _process(delta: float) -> void:
 	# Reset speed if body is colliding with anything
 	if _ray_cast_right.is_colliding() or _ray_cast_left.is_colliding():
 		if _speed_multiplier > DEFAULT_SPEED_MULTIPLIER:
-			_reset_speed_multiplier()
+			_state_chart.send_event("speed_normal")
 	
 	# Camera offset based on direction
 	if _camera:
@@ -70,7 +71,7 @@ func _on_can_move_state_physics_processing(delta: float) -> void:
 	# Reset speed if there was a change in direction. This prevents keeping dashing
 	# momentum if the direction was changed
 	if direction != _last_direction:
-		_reset_speed_multiplier()
+		_state_chart.send_event("speed_normal")
 	_last_direction = round(direction)
 	
 	if direction >= 0.5 or direction <= -0.5:
@@ -148,10 +149,10 @@ func _on_jump_enabled_state_physics_processing(delta: float) -> void:
 # Enable dash. Typically only on grounded non-dashing state
 func _on_dash_enabled_state_physics_processing(delta: float) -> void:
 	if Input.is_action_just_pressed(Global.ACTION_LIST[Global.ActionList.DASH]) and _last_direction != 0:
-		_speed_multiplier = DASH_SPEED
 		_is_dashing = true
 		_state_chart.send_event("dash")
 		_animation_state_machine.travel("dash")
+		_state_chart.send_event("speed_fast")
 
 
 # Additional processing when dashing
@@ -168,19 +169,19 @@ func _on_dashing_state_physics_processing(delta: float) -> void:
 func _on_dash_end() -> void:
 	_is_dashing = false
 	if is_on_floor():
-		_reset_speed_multiplier()
+		_state_chart.send_event("speed_normal")
 
 
 # Reset speed on double jump
 func _on_doublejump_jump() -> void:
-	_reset_speed_multiplier()
+	_state_chart.send_event("speed_normal")
 	_animation_state_machine.travel("doublejump")
 
 
 # Reset speed after bunny hop window expires
 func _on_bunnyhop_expire() -> void:
 	_is_dashing = false
-	_reset_speed_multiplier()
+	_state_chart.send_event("speed_normal")
 
 
 # Reset speed multiplier
@@ -188,21 +189,39 @@ func _reset_speed_multiplier() -> void:
 	_speed_multiplier = DEFAULT_SPEED_MULTIPLIER
 
 
+# Fast dash speed state
+func _on_fast_state_entered() -> void:
+	_speed_multiplier = DASH_SPEED
+
+
+# Draw afterimages
+func _on_fast_state_physics_processing(delta: float) -> void:
+	if _draw_afterimage:
+		_draw_afterimage = false
+		var timer: SceneTreeTimer = get_tree().create_timer(0.1)
+		timer.timeout.connect(func():
+			_draw_afterimage = true
+		)
+		draw_afterimage()
+
+
 # Afterimage
 func draw_afterimage() -> void:
 	var afterimage := Node2D.new()
-	var afterimage_sprite = _sprite.duplicate()
-	var tween = get_tree().create_tween()
+	var afterimage_sprite: Sprite2D = _sprite.duplicate()
 	
+	# Add the sprite
+	afterimage_sprite.modulate = Color(0.5, 0.7, 1.0, 0.5)
 	afterimage.add_child(afterimage_sprite)
 	afterimage.global_position = self.global_position
 	self.get_parent().add_child(afterimage)
 	
+	# Fadeout sprite
+	var tween = get_tree().create_tween()
 	tween.tween_property(afterimage_sprite, "modulate:a", 0, FADE_DURATION)
 	tween.play()
 	tween.finished.connect(func():
 		tween.kill()
-		afterimage.queue_free()
 	)
 
 # Process jump hold frames
