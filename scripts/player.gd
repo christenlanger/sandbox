@@ -198,7 +198,7 @@ func _on_fast_state_entered() -> void:
 func _on_fast_state_physics_processing(delta: float) -> void:
 	if _draw_afterimage:
 		_draw_afterimage = false
-		var timer: SceneTreeTimer = get_tree().create_timer(0.1)
+		var timer: SceneTreeTimer = get_tree().create_timer(0.05)
 		timer.timeout.connect(func():
 			_draw_afterimage = true
 		)
